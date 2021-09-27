@@ -14,6 +14,8 @@ public class ServerConnecter : MonoBehaviourPunCallbacks
     private Dropdown dropDownRoomName;
     [SerializeField]
     private byte maxPlayers = 4;
+    [SerializeField]
+    private InputField playerName;
     private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
 
     // Start is called before the first frame update
@@ -29,15 +31,26 @@ public class ServerConnecter : MonoBehaviourPunCallbacks
     }
     public void CreateRoomButtonCallback()
 	{
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = maxPlayers;
-        PhotonNetwork.CreateRoom(createRoomName.text, roomOptions, null);
-      
+        if (playerName.text != "")
+        {
+
+            RoomOptions roomOptions = new RoomOptions();
+            roomOptions.MaxPlayers = maxPlayers;
+            PhotonNetwork.LocalPlayer.NickName = playerName.text;
+            PhotonNetwork.CreateRoom(createRoomName.text, roomOptions, null);
+        }else {
+            Debug.LogError("name can't be empty");
+        }
     }
 
     public void JoinRoomButtonCallback()
     {
-        PhotonNetwork.JoinRoom(dropDownRoomName.options[dropDownRoomName.value].text);
+        if (playerName.text != "") {
+            PhotonNetwork.LocalPlayer.NickName = playerName.text;
+            PhotonNetwork.JoinRoom(dropDownRoomName.options[dropDownRoomName.value].text);
+        }else {
+            Debug.LogError("name can't be empty");
+        }
     }
     private void UpdateCachedRoomList(List<RoomInfo> roomList)
     {
@@ -88,7 +101,7 @@ public class ServerConnecter : MonoBehaviourPunCallbacks
     }
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.LoadLevel("ClassicLudo");
+        PhotonNetwork.LoadLevel("Lobby");
     }
     #endregion
 
