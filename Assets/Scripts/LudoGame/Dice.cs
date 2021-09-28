@@ -50,7 +50,35 @@ public class Dice : MonoBehaviour
         {
             currentThrow++;
             isRolling = false;
-            if (Vector3.Angle(transform.forward, Vector3.up) == 0)
+
+            //ordered: 0->1 , 1->2 , ... , 5->6
+            List<float> angles = new List<float>() {
+                Vector3.Angle(-transform.right, Vector3.up),
+                Vector3.Angle(transform.up, Vector3.up),
+                Vector3.Angle(transform.forward, Vector3.up),
+                Vector3.Angle(-transform.forward, Vector3.up),
+                Vector3.Angle(-transform.up, Vector3.up),
+                Vector3.Angle(transform.right, Vector3.up)
+            };
+
+            float min = float.MaxValue;
+
+            for (int i = 0; i < angles.Count; i++)
+            {
+                if (angles[i] == 0)
+                {
+                    result = i + 1;
+                    break;
+                }
+                else if (Math.Abs(angles[i]) < min)
+                {
+                    min = Math.Abs(angles[i]);
+                    result = i + 1;
+                }
+
+            }
+
+            /*if (Vector3.Angle(transform.forward, Vector3.up) == 0)
             {
                 result = 3;
             }
@@ -73,12 +101,13 @@ public class Dice : MonoBehaviour
             else if (Vector3.Angle(-transform.right, Vector3.up) == 0)
             {
                 result = 1;
-            }
+            }*/
             throws[result]++;
             //Debug.Log("Try no. " + currentThrow + " : " + result);
 
             if (currentThrow < tries)
             {
+                result = 0;
                 RollDice();
             }
             else

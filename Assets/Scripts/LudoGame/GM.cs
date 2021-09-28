@@ -22,7 +22,7 @@ public class GM : MonoBehaviour
                 photonIndex++;
             }
             else {
-                players.Add(new Player(m, punplayers[0]));
+                players.Add(new Player(m));
             }
         }
     }

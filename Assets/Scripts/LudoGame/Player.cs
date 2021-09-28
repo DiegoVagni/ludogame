@@ -8,7 +8,7 @@ public class Player
     private int playerNumber;
     private Material mat;
     private Photon.Realtime.Player photonPlayer;
-    public Player(Material mat,Photon.Realtime.Player photonPlayer)
+    public Player(Material mat,Photon.Realtime.Player photonPlayer=null)
 	{
         this.mat = mat;
         playerNumber = players;
