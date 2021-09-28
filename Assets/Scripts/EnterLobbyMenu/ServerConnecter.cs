@@ -90,10 +90,7 @@ public class ServerConnecter : MonoBehaviourPunCallbacks
     public override void OnJoinedLobby()
     {
         Debug.Log("Joined Lobby");
-        if (!PhotonNetwork.InRoom)
-        {
-            
-        }
+    
     }
     public override void OnDisconnected(DisconnectCause cause)
     {

@@ -38,4 +38,8 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             UpdatePlayers();
         }
     }
+
+    public void StartGame() {
+        PhotonNetwork.LoadLevel("ClassicLudo");
+    }
 }

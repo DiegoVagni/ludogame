@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Realtime;
+using Photon.Pun;
 
 public class GM : MonoBehaviour
 {
@@ -11,15 +13,28 @@ public class GM : MonoBehaviour
     void Start()
     {
         players = new List<Player>();
+        List<Photon.Realtime.Player> punplayers = new List<Photon.Realtime.Player>(PhotonNetwork.PlayerList);
+        int photonIndex = 0;
         foreach (Material m in playerMaterials) {
-            players.Add(new Player(m));        
+            if (photonIndex < punplayers.Count)
+            {
+                players.Add(new Player(m, punplayers[photonIndex]));
+                photonIndex++;
+            }
+            else {
+                players.Add(new Player(m, punplayers[0]));
+            }
         }
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (Time.frameCount % 3600 == 0) {
+            foreach (Player p in players) {
+                p.StampPlayer();
+            }
+        } 
     }
     public List<Player> GetPlayers() {
         return players;
