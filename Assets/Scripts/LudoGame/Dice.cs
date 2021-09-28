@@ -6,18 +6,50 @@ using System;
 public class Dice : MonoBehaviour
 {
     private Rigidbody rb;
+    [SerializeField] private int torqueMin;
+    [SerializeField] private int torqueMax;
+    [SerializeField] private int forceMin;
+    [SerializeField] private int forceMax;
+
+    private Vector3 startingPosition;
+    private Quaternion startingRotation;
+    private Vector3 startingScale;
+
+    FileLogger fileLogger = LoggerManager.GetInstance();
+
+
+    private System.Random random;
+    private bool isRolling = false;
+    [SerializeField] private int tries = 1;
+
+
+    private int currentThrow = 0;
+    private int result = 0;
+    public static int[] throws;
+    public static int finished;
     // Start is called before the first frame update
+
+    static Dice()
+    {
+        throws = new int[] { 0, 0, 0, 0, 0, 0, 0 };
+        finished = 0;
+    }
+
     void Start()
     {
-        System.Random random = new System.Random(Guid.NewGuid().GetHashCode());
-        rb = this.GetComponent<Rigidbody>();
-        rb.AddTorque(new Vector3(random.Next(-1000,1000), random.Next(-1000, 1000), random.Next(-1000, 1000)), ForceMode.Force);
+        startingPosition = transform.position;
+        startingRotation = transform.rotation;
+        startingScale = transform.localScale;
+        random = new System.Random(Guid.NewGuid().GetHashCode());
+        RollDice();
     }
-    int result = 0;
     // Update is called once per frame
     void Update()
     {
-        if (rb.velocity.magnitude == 0 && result == 0) {
+        if (isRolling && rb.velocity.magnitude == 0)
+        {
+            currentThrow++;
+            isRolling = false;
             if (Vector3.Angle(transform.forward, Vector3.up) == 0)
             {
                 result = 3;
@@ -42,7 +74,34 @@ public class Dice : MonoBehaviour
             {
                 result = 1;
             }
+            throws[result]++;
+            //Debug.Log("Try no. " + currentThrow + " : " + result);
+
+            if (currentThrow < tries)
+            {
+                RollDice();
+            }
+            else
+            {
+                finished++;
+                Debug.Log(finished);
+            }
         }
-        Debug.Log(result);
+        else if (rb.velocity.magnitude != 0)
+        {
+            isRolling = true;
+        }
     }
+
+    void RollDice()
+    {
+        transform.position = startingPosition;
+        transform.rotation = startingRotation;
+        transform.localScale = startingScale;
+        rb = this.GetComponent<Rigidbody>();
+        rb.AddForce(Vector3.up * random.Next(forceMin, forceMax));
+        rb.AddTorque(new Vector3(random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax)), ForceMode.Force);
+    }
+
+
 }
