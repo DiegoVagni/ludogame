@@ -161,7 +161,7 @@ public class Field : MonoBehaviour
 									pos = new Vector3(s.transform.position.x+4, 0,  saf.transform.position.z+4);
 									break;
 								case 1:
-									pos = new Vector3( s.transform.position.x-1.5f, 0, saf.transform.position.z+0.6f);
+									pos = new Vector3( s.transform.position.x-1.5f, 0, saf.transform.position.z+0.4f);
 									break;
 								case 2:
 									pos = new Vector3( s.transform.position.x-4, 0, saf.transform.position.z-4);

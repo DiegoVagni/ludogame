@@ -563,7 +563,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1155240368}
   - component: {fileID: 1155240370}
-  - component: {fileID: 1155240369}
   m_Layer: 0
   m_Name: DiceCam
   m_TagString: Untagged
@@ -585,14 +584,6 @@ Transform:
   m_Father: {fileID: 1292664277}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!81 &1155240369
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1155240367}
-  m_Enabled: 1
 --- !u!20 &1155240370
 Camera:
   m_ObjectHideFlags: 0
