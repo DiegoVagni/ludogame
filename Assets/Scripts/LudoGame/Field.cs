@@ -11,9 +11,10 @@ public class Field : MonoBehaviour
 	[SerializeField]
 	private PlayerCell finishCell;
 	[SerializeField]
-	private PlayerCell homeCell;
+	private HomeCell homeCell;
 	[SerializeField]
 	private float cellDistance;
+
 	[SerializeField]
 	private List<ScriptableSegment> segmentInstructions;
 	[SerializeField]
@@ -176,8 +177,9 @@ public class Field : MonoBehaviour
 							
 							
 							settedHome = true;
-							PlayerCell home = Instantiate(homeCell, pos, Quaternion.identity);
+							HomeCell home = Instantiate(homeCell, pos, Quaternion.identity);
 							home.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();
+							home.SpawnPawns(currentPlayer);
 							break;
 						}
 				}

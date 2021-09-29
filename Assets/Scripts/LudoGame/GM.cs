@@ -8,6 +8,7 @@ public class GM : MonoBehaviour
 {
     [SerializeField]
     private List<Material> playerMaterials;
+
     private List<Player> players;
     // Start is called before the first frame update
     void Start()

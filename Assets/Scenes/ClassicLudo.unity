@@ -674,7 +674,7 @@ MonoBehaviour:
   cellPrefab: {fileID: 6234614897653981703, guid: d8fa1394fb8d95e47a3198e41fa29b7c, type: 3}
   playerCellPrefab: {fileID: -3082674134426201399, guid: 00b388c745a1017439847c004298f241, type: 3}
   finishCell: {fileID: 5049927688177939466, guid: e25286247075da74bb40081b4fadadd6, type: 3}
-  homeCell: {fileID: 6770613626915166051, guid: 0e06d0bb5b89bb444b92c1158371b678, type: 3}
+  homeCell: {fileID: 5042997244417680988, guid: 0e06d0bb5b89bb444b92c1158371b678, type: 3}
   cellDistance: 0.1
   segmentInstructions:
   - {fileID: 11400000, guid: 0982ef96ad3b3a5429aa3ead127666e7, type: 2}

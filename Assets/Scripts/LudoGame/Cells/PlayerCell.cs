@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerCell : Cell
 {
-    private Player player;
+    protected Player player;
     public void SetPlayer(Player p) {
         player = p;
     }
