@@ -43,7 +43,7 @@ public class Field : MonoBehaviour
 		List<PlayerCell> junctions = new List<PlayerCell>();
 		Player currentPlayer = gameManager.GetPlayers()[0];
 		ScriptableSpecCell nextCell = specialCells[0];
-
+		
 		int specIndex = 1;
 		int pc = path.Count;
 		int lastIndex = pc - 1;
