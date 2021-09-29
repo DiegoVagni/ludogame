@@ -9,6 +9,10 @@ public class Field : MonoBehaviour
 	[SerializeField]
 	private PlayerCell playerCellPrefab;
 	[SerializeField]
+	private PlayerCell finishCell;
+	[SerializeField]
+	private PlayerCell homeCell;
+	[SerializeField]
 	private float cellDistance;
 	[SerializeField]
 	private List<ScriptableSegment> segmentInstructions;
@@ -20,6 +24,7 @@ public class Field : MonoBehaviour
 	private List<ScriptableSegment> middleSegment;
 	private List<Cell> path;
 	private List<PlayerCell> start;
+	private List<PlayerCell> safes;
 
 	//needs heavy refactory when i want
 	// Start is called before the first frame update
@@ -33,6 +38,7 @@ public class Field : MonoBehaviour
 	{
 		start = new List<PlayerCell>();
 		path = new List<Cell>();
+		safes = new List<PlayerCell>();
 		List<PlayerCell> junctions = new List<PlayerCell>();
 		Player currentPlayer = gameManager.GetPlayers()[0];
 		ScriptableSpecCell nextCell = specialCells[0];
@@ -66,7 +72,8 @@ public class Field : MonoBehaviour
 					PlayerCell c;
 					c = Instantiate(playerCellPrefab, pos, Quaternion.identity);
 					c.SetPlayer(currentPlayer);
-					switch (nextCell.GetCellType()) {
+					switch (nextCell.GetCellType())
+					{
 						case CellType.Junction:
 							junctions.Add(c);
 							c.SetType(CellType.Junction);
@@ -79,10 +86,12 @@ public class Field : MonoBehaviour
 						case CellType.Safe:
 							c.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();
 							currentPlayer = gameManager.GetPlayers()[(gameManager.GetPlayers().IndexOf(currentPlayer) + 1) % gameManager.GetPlayers().Count];
-							
+
 							c.SetType(CellType.Safe);
+							safes.Add(c);
 							break;
-						default: Debug.LogError("default case in field.cs");
+						default:
+							Debug.LogError("default case in field.cs");
 							break;
 					}
 					if (specialCells.Count > specIndex)
@@ -92,11 +101,12 @@ public class Field : MonoBehaviour
 					}
 					instantiatedCell = c;
 				}
-				if (instantiatedCell == null) { 
-				 instantiatedCell = Instantiate(cellPrefab, pos, Quaternion.identity);
+				if (instantiatedCell == null)
+				{
+					instantiatedCell = Instantiate(cellPrefab, pos, Quaternion.identity);
 				}
 				instantiatedCell.transform.SetParent(transform);
-			
+
 				if (path.Count > 0)
 				{
 					Cell lastCell = path[lastIndex];
@@ -111,14 +121,15 @@ public class Field : MonoBehaviour
 			}
 
 		}
-		
+
 		path[lastIndex].AddIntersection(CellIntersections.Next, path[0]);
 		path[0].AddIntersection(CellIntersections.Prev, path[lastIndex]);
 		int playerIndex = 0;
-		foreach (PlayerCell j in junctions) {
+		foreach (PlayerCell j in junctions)
+		{
 			currentPlayer = gameManager.GetPlayers()[playerIndex];
 			ScriptableSegment ms = middleSegment[junctions.IndexOf(j)];
-		    Vector3 pos = j.GetPosition() + ms.GetAxis() + ms.GetAxis() * cellDistance;
+			Vector3 pos = j.GetPosition() + ms.GetAxis() + ms.GetAxis() * cellDistance;
 			for (int i = 0; i < ms.GetNumberOfCells(); i++)
 			{
 				PlayerCell c = Instantiate(playerCellPrefab, pos, Quaternion.identity);
@@ -130,19 +141,62 @@ public class Field : MonoBehaviour
 					j.AddIntersection(CellIntersections.Color, c);
 					c.AddIntersection(CellIntersections.Prev, j);
 				}
-				else {
+				else
+				{
 					c.AddIntersection(CellIntersections.Prev, path[path.Count - 1]);
-					path[path.Count-1].AddIntersection(CellIntersections.Next,c);
+					path[path.Count - 1].AddIntersection(CellIntersections.Next, c);
 				}
 				pos = path[path.Count - 1].GetPosition() + ms.GetAxis() + ms.GetAxis() * cellDistance;
 			}
+			bool settedHome = false;
+			foreach (PlayerCell s in start)
+			{
+				foreach (PlayerCell saf in safes)
+				{
+					if (currentPlayer.GetPlayerNumber() == s.GetPlayer().GetPlayerNumber() && s.GetPlayer().GetPlayerNumber() == saf.GetPlayer().GetPlayerNumber())
+						if (currentPlayer.GetPlayerNumber() == s.GetPlayer().GetPlayerNumber())
+						{
+							switch (playerIndex % 4) {
+								case 0: 
+									pos = new Vector3(s.transform.position.x+4, 0,  saf.transform.position.z+4);
+									break;
+								case 1:
+									pos = new Vector3( s.transform.position.x-1.5f, 0, saf.transform.position.z+0.6f);
+									break;
+								case 2:
+									pos = new Vector3( s.transform.position.x-4, 0, saf.transform.position.z-4);
+									break;
+								case 3:
+									pos = new Vector3( s.transform.position.x+1.5f, 0,  saf.transform.position.z-0.4f);
+									break;
+								default:
+									Debug.Log("will come...");
+									break;
+							}
+							
+							
+							settedHome = true;
+							PlayerCell home = Instantiate(homeCell, pos, Quaternion.identity);
+							home.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();
+							break;
+						}
+				}
+				if (settedHome) {
+					break;
+				}
+			}
 			//adding player cell
-			PlayerCell home = Instantiate(playerCellPrefab, pos, Quaternion.identity);
-			home.transform.SetParent(transform);
-			home.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();
-			home.AddIntersection(CellIntersections.Prev, path[path.Count - 1]);
-			path[path.Count - 1].AddIntersection(CellIntersections.Next, home);
-			path.Add(home);
+			//lo schifo ma è semplice così
+			pos = path[path.Count - 1].GetPosition() + ms.GetAxis() + ms.GetAxis() * (cellDistance + 0.15f);
+			Quaternion rotation = Quaternion.Euler(90, 90 * ((playerIndex + 2) % 4), 0);
+			PlayerCell finish = Instantiate(finishCell, pos, rotation);
+			finish.transform.SetParent(transform);
+
+			finish.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();
+			finish.AddIntersection(CellIntersections.Prev, path[path.Count - 1]);
+			path[path.Count - 1].AddIntersection(CellIntersections.Next, finish);
+			path.Add(finish);
+
 			playerIndex++;
 
 		}
@@ -152,7 +206,7 @@ public class Field : MonoBehaviour
 	// Update is called once per frame
 	void Update()
 	{
-	
-		
+
+
 	}
 }

@@ -32,7 +32,7 @@ public class GM : MonoBehaviour
     {
         if (Time.frameCount % 3600 == 0) {
             foreach (Player p in players) {
-                p.StampPlayer();
+              //  p.StampPlayer();
             }
         } 
     }
