@@ -19,7 +19,7 @@ public class Dice : MonoBehaviour
 
 
     private System.Random random;
-    private bool isRolling = false;
+    public static bool isRolling = false;
     [SerializeField] private int tries = 1;
 
 
@@ -27,6 +27,8 @@ public class Dice : MonoBehaviour
     private int result = 0;
     public static int[] throws;
     public static int finished;
+    private float prevVelocity = -1;
+    private float prevPrevVelocity = -1;
     // Start is called before the first frame update
     //sposta sto codice in un unittest
     static Dice()
@@ -46,10 +48,12 @@ public class Dice : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isRolling && rb.velocity.magnitude == 0)
+
+        if (isRolling && rb.velocity.magnitude == 0 && prevPrevVelocity == 0 &&prevVelocity == 0)
         {
             currentThrow++;
             isRolling = false;
+            Debug.Log("set to false");
 
             //ordered: 0->1 , 1->2 , ... , 5->6
             List<float> angles = new List<float>() {
@@ -121,6 +125,8 @@ public class Dice : MonoBehaviour
         {
             isRolling = true;
         }*/
+        prevPrevVelocity = prevVelocity;
+        prevVelocity = rb.velocity.magnitude;
     }
     public bool IsRolling() {
         return isRolling;
@@ -134,6 +140,7 @@ public class Dice : MonoBehaviour
     {
         //più pulito, lo setti a true solo una volta, non possono esserci concurrency
         isRolling = true;
+        Debug.Log("Set to true");
         transform.position = startingPosition;
         transform.rotation = startingRotation;
         transform.localScale = startingScale;

@@ -21,26 +21,30 @@ public class GM : MonoBehaviour
         players = new List<Player>();
         List<Photon.Realtime.Player> punplayers = new List<Photon.Realtime.Player>(PhotonNetwork.PlayerList);
         int photonIndex = 0;
-        foreach (Material m in playerMaterials) {
+        foreach (Material m in playerMaterials)
+        {
             if (photonIndex < punplayers.Count)
             {
                 players.Add(new Player(m, punplayers[photonIndex]));
                 photonIndex++;
             }
-            else {
+            else
+            {
                 players.Add(new Player(m));
             }
         }
         currentPlayer = players[0];
         StartTurn();
     }
-    private void StartTurn() {
+    private void StartTurn()
+    {
         whyAreYouRunning = true;
-       
+
         StartCoroutine("Turn");
     }
-    public IEnumerator Turn() {
-
+    public IEnumerator Turn()
+    {
+        Dice.isRolling = true;
         dice.RollDice();
         yield return new WaitForSeconds(1f);
         while (dice.IsRolling())
@@ -49,18 +53,20 @@ public class GM : MonoBehaviour
         }
         int result = dice.GetResult();
         //chose move for player.
-        Debug.Log("player " + currentPlayer.GetPlayerNumber() + "rolled a " + result);
-        if (result == 6) {
-          
+        //Debug.Log("player " + currentPlayer.GetPlayerNumber() + "rolled a " + result);
+        if (result == 6)
+        {
+
         }
-        currentPlayer = players[currentPlayer.GetPlayerNumber()%4];
+        currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
         whyAreYouRunning = false;
-       
+
     }
     // Update is called once per frame
     void Update()
     {
-        if (Time.frameCount >10000) {
+        if (/*Time.frameCount >10000*/Time.realtimeSinceStartup > 100)
+        {
             gameFinished = true;
         }
         if (!gameFinished && !whyAreYouRunning)
@@ -68,8 +74,9 @@ public class GM : MonoBehaviour
             StartTurn();
         }
     }
-  
-    public List<Player> GetPlayers() {
+
+    public List<Player> GetPlayers()
+    {
         return players;
     }
 
