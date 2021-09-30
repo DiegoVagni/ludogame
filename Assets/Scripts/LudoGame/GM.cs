@@ -8,11 +8,13 @@ public class GM : MonoBehaviour
 {
     [SerializeField]
     private List<Material> playerMaterials;
+    [SerializeField]
+    private Dice dice;
     private Player currentPlayer;
     private List<Player> players;
     private bool gameFinished = false;
     private bool whyAreYouRunning = false;
-    private int playerIndex = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,13 +36,23 @@ public class GM : MonoBehaviour
     }
     private void StartTurn() {
         whyAreYouRunning = true;
+       
         StartCoroutine("Turn");
     }
     public IEnumerator Turn() {
-        int diceResult=6; //= dice.throw.something
-        currentPlayer.MakeMove(diceResult);
-        yield return new WaitForSeconds(3);
-      
+
+        dice.RollDice();
+        yield return new WaitForSeconds(1f);
+        while (dice.IsRolling())
+        {
+            yield return new WaitForSeconds(0.5f);
+        }
+        int result = dice.GetResult();
+        //chose move for player.
+        Debug.Log("player " + currentPlayer.GetPlayerNumber() + "rolled a " + result);
+        if (result == 6) {
+          
+        }
         currentPlayer = players[currentPlayer.GetPlayerNumber()%4];
         whyAreYouRunning = false;
        
@@ -48,7 +60,7 @@ public class GM : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.frameCount > 5000) {
+        if (Time.frameCount >10000) {
             gameFinished = true;
         }
         if (!gameFinished && !whyAreYouRunning)
@@ -56,6 +68,7 @@ public class GM : MonoBehaviour
             StartTurn();
         }
     }
+  
     public List<Player> GetPlayers() {
         return players;
     }

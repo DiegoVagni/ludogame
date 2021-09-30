@@ -28,7 +28,7 @@ public class Dice : MonoBehaviour
     public static int[] throws;
     public static int finished;
     // Start is called before the first frame update
-
+    //sposta sto codice in un unittest
     static Dice()
     {
         throws = new int[] { 0, 0, 0, 0, 0, 0, 0 };
@@ -41,7 +41,7 @@ public class Dice : MonoBehaviour
         startingRotation = transform.rotation;
         startingScale = transform.localScale;
         random = new System.Random(Guid.NewGuid().GetHashCode());
-        RollDice();
+       // RollDice();
     }
     // Update is called once per frame
     void Update()
@@ -105,7 +105,7 @@ public class Dice : MonoBehaviour
             throws[result]++;
             //Debug.Log("Try no. " + currentThrow + " : " + result);
 
-            if (currentThrow < tries)
+         /*   if (currentThrow < tries)
             {
                 result = 0;
                 RollDice();
@@ -114,16 +114,26 @@ public class Dice : MonoBehaviour
             {
                 finished++;
                 Debug.Log(finished);
-            }
+            }*/
         }
-        else if (rb.velocity.magnitude != 0)
+        // questo è meglio farlo in altra maniera
+        /*else if (rb.velocity.magnitude != 0)
         {
             isRolling = true;
-        }
+        }*/
     }
-
-    void RollDice()
+    public bool IsRolling() {
+        return isRolling;
+    }
+    
+    public int GetResult()
     {
+        return result;
+    }
+    public void RollDice()
+    {
+        //più pulito, lo setti a true solo una volta, non possono esserci concurrency
+        isRolling = true;
         transform.position = startingPosition;
         transform.rotation = startingRotation;
         transform.localScale = startingScale;

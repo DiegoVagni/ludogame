@@ -9,8 +9,10 @@ public class Player
     private static int players = 1;
     private int playerNumber;
     private Material mat;
-    private List<GameObject> pawns;
+    private List<Pawn> pawns;
     private Photon.Realtime.Player photonPlayer;
+    private HomeCell home;
+ 
     public Player(Material mat,Photon.Realtime.Player photonPlayer=null)
 	{
         this.mat = mat;
@@ -24,20 +26,29 @@ public class Player
     public int GetPlayerNumber() {
         return playerNumber;
     }
+    public void SetHome(HomeCell home)
+	{
+
+        this.home = home;
+	}
+    public HomeCell GetHome() {
+        return home;
+    }
+    public PlayerCell GetStart() {
+        return (PlayerCell)home.GetConnectedCells()[CellIntersections.Next];
+    }
     // Destructor
     ~Player()
     {
         players--;
     }
-    public void SetPawns(List<GameObject> pawns) {
+    public void SetPawns(List<Pawn> pawns) {
         this.pawns = pawns;
+ 
     }
     public void StampPlayer() {
         Debug.Log("Player " + playerNumber + " is known as " + photonPlayer.NickName);
     }
 
-	internal void MakeMove(int dice)
-	{
-        Debug.Log("muovo!" + playerNumber);
-	}
+	
 }

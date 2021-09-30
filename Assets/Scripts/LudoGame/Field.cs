@@ -180,6 +180,7 @@ public class Field : MonoBehaviour
 							HomeCell home = Instantiate(homeCell, pos, Quaternion.identity);
 							home.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();
 							home.SpawnPawns(currentPlayer);
+							currentPlayer.SetHome(home);
 							break;
 						}
 				}
