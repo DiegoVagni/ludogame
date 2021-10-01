@@ -1,12 +1,14 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Cell : MonoBehaviour
 {
+    [SerializeField]
     private CellType type = CellType.Normal;
 
-    Dictionary<CellIntersections, Cell> intersections;
+    protected Dictionary<CellIntersections, Cell> intersections;
     public void Awake() {
         intersections =  new Dictionary<CellIntersections, Cell>();
     }
@@ -28,4 +30,9 @@ public class Cell : MonoBehaviour
     public void SetType(CellType t) {
         type = t;
     }
+
+	internal Cell GetNextCell()
+	{
+        return intersections[CellIntersections.Next];
+	}
 }

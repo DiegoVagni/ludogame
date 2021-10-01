@@ -178,8 +178,10 @@ public class Field : MonoBehaviour
 							
 							settedHome = true;
 							HomeCell home = Instantiate(homeCell, pos, Quaternion.identity);
-							home.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();
 							home.SpawnPawns(currentPlayer);
+							home.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();
+							home.AddIntersection(CellIntersections.Next, s);
+							s.AddIntersection(CellIntersections.Prev, home);
 							currentPlayer.SetHome(home);
 							break;
 						}

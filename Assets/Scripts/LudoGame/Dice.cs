@@ -85,7 +85,7 @@ public class Dice : MonoBehaviour
             }
 
             throws[result]++;
-            diceRolled();
+            //diceRolled();
         }
         // questo è meglio farlo in altra maniera
         else if (rb.velocity.magnitude != 0)
@@ -108,8 +108,8 @@ public class Dice : MonoBehaviour
         transform.position = startingPosition;
         transform.rotation = startingRotation;
         transform.localScale = startingScale;
-        rb.AddForce(Vector3.up * random.Next(forceMin, forceMax));
-        rb.AddTorque(new Vector3(random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax)), ForceMode.Force);
+        rb.AddForce(Vector3.up * random.Next(forceMin, forceMax),ForceMode.Impulse);
+        rb.AddTorque(new Vector3(random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax)), ForceMode.Impulse);
     }
 
 

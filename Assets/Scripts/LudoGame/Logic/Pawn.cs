@@ -26,4 +26,14 @@ public class Pawn
 	public Cell GetCurrentCell() {
 		return currentCell;
 	}
+	public void SetCurrentCell(Cell cell) {
+		currentCell = cell;
+	}
+	public void Move(int steps) {
+		for (int i = 0; i < steps; i++) {
+			Cell nextCell = currentCell.GetNextCell();
+			pawnGameObject.transform.position = nextCell.transform.position + new Vector3(0, 1, 0);
+			currentCell = nextCell;
+		}
+	}
 }

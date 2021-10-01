@@ -20,5 +20,23 @@ public class HomeCell : PlayerCell {
 		player.SetPawns(pawns);
 	}
 
+	public void SendPawnToHome(Pawn pawn) {
 
+		for (int i = 0; i < spawnPoints.Count; i++) {
+			if (!occupaedSpawnPoints[i]) { 
+			pawn.GetPawn().transform.position = spawnPoints[i].transform.position;
+				occupaedSpawnPoints[i] = true;
+			}		
+		} 
+	}
+	public void ExitPawnToHome(Pawn pawn)
+	{
+		for (int i = 0; i < spawnPoints.Count; i++) {
+			if (occupaedSpawnPoints[i]) {
+				pawn.Move(1);
+				occupaedSpawnPoints[i] = false;
+				break;
+			}
+		}
+	}
 }

@@ -49,6 +49,57 @@ public class Player
     public void StampPlayer() {
         Debug.Log("Player " + playerNumber + " is known as " + photonPlayer.NickName);
     }
+    public Pawn GetPawnInHome() {
+        foreach (Pawn p in pawns) {
+            if (p.GetCurrentCell().GetCellType() == CellType.Home) {
+                
+                return p;
+            }
+        }
+        return null;
+    }
+    public Pawn GetPawnOutOfHome() {
+        foreach (Pawn p in pawns)
+        {
+            if (p.GetCurrentCell().GetCellType() != CellType.Home)
+            {
+                return p;
+            }
+        }
+        return null;
+    }
+    public void ChooseMove(int diceNumber) {
+        if (diceNumber == 6)
+        {
+            foreach (Pawn p in pawns)
+            {
+                if (p.GetCurrentCell().GetCellType() == CellType.Start)
+                {
+                    p.Move(diceNumber);
+                    return;
+                }
+            }
+            Pawn pawnToMove = GetPawnInHome();
+            if (pawnToMove != null)
+            {
+                home.ExitPawnToHome(pawnToMove);
+                return;
+            }
+            else
+            {
+                pawnToMove = GetPawnOutOfHome();
+                pawnToMove.Move(diceNumber);
+                return;
+            }
+
+        }
+        else {
+            if (GetPawnOutOfHome() != null) {
+                GetPawnOutOfHome().Move(diceNumber);
+                return;
+            }
+        }
+    }
 
 	
 }

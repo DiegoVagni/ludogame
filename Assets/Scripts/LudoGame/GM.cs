@@ -43,7 +43,7 @@ public class GM : MonoBehaviour
     private Player currentPlayer;
     private List<Player> players;
     private bool gameFinished = false;
-    //private bool whyAreYouRunning = false;
+   private bool whyAreYouRunning = false;
 
     // Start is called before the first frame update
     void Start()
@@ -66,11 +66,11 @@ public class GM : MonoBehaviour
             }
         }
         currentPlayer = players[0];
-        dice.RollDice();
+   
     }
-    //private void StartTurn()
-    //{
-    //whyAreYouRunning = true;
+    private void StartTurn()
+    {
+     whyAreYouRunning = true;
 
 
     //yield return new WaitForSeconds(1f);
@@ -80,45 +80,40 @@ public class GM : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
     }*/
 
-    //currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
-    //whyAreYouRunning = false;
-    //StartCoroutine("Turn");
-    //}
-    /*public IEnumerator Turn()
+        
+    StartCoroutine("Turn");
+    }
+      public IEnumerator Turn()
     {
-        lock (dice)
-        {
+
 
             dice.RollDice();
             yield return new WaitForSeconds(1f);
             yield return new WaitUntil(() => !dice.IsRolling());
-            *//*while (dice.IsRolling())
+            while (dice.IsRolling())
             {
                 yield return new WaitForSeconds(0.5f);
-            }*//*
-            int result = dice.GetResult();
-            //chose move for player.
-            //Debug.Log("player " + currentPlayer.GetPlayerNumber() + "rolled a " + result);
-            if (result == 6)
-            {
-
             }
+            int result = dice.GetResult();
+        //chose move for player.
+        //Debug.Log("player " + currentPlayer.GetPlayerNumber() + "rolled a " + result);
+        currentPlayer.ChooseMove(result);
             currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
             whyAreYouRunning = false;
         }
 
-    }*/
+    
     // Update is called once per frame
     void Update()
     {
-        if (/*Time.frameCount >10000*/Time.realtimeSinceStartup > 100)
+        if (/*Time.frameCount >10000*/false)
         {
             gameFinished = true;
         }
-        /*if (!gameFinished && *//*!whyAreYouRunning*//*diceRolled)
+        if (!gameFinished && !whyAreYouRunning && Time.frameCount > 10)
         {
-            
-        }*/
+            StartTurn();
+        }
     }
 
     public List<Player> GetPlayers()
