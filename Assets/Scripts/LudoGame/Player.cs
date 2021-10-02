@@ -61,6 +61,9 @@ public class Player
     public Pawn GetPawnOutOfHome() {
         foreach (Pawn p in pawns)
         {
+            if (p.GetCurrentCell() == null) {
+                Debug.Log("sono un coglione");
+            }
             if (p.GetCurrentCell().GetCellType() != CellType.Home)
             {
                 return p;
@@ -73,6 +76,10 @@ public class Player
         {
             foreach (Pawn p in pawns)
             {
+                if (p.GetCurrentCell() == null)
+                {
+                    Debug.Log("sono un coglione");
+                }
                 if (p.GetCurrentCell().GetCellType() == CellType.Start)
                 {
                     p.Move(diceNumber);

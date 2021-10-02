@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class HomeCell : PlayerCell {
 	[SerializeField]
-	private List<GameObject> pawnPrefab;
+	private List<Pawn> pawnPrefab;
 	[SerializeField]
 	private List<GameObject> spawnPoints;
 	private List<bool> occupaedSpawnPoints;
@@ -12,9 +12,10 @@ public class HomeCell : PlayerCell {
 		List<Pawn> pawns = new List<Pawn>();
 		occupaedSpawnPoints = new List<bool>();
 		foreach (GameObject s in spawnPoints) {
-			GameObject pawn = Instantiate(pawnPrefab[player.GetPlayerNumber()-1], s.transform.position, Quaternion.identity);
+			Pawn pawn = Instantiate(pawnPrefab[player.GetPlayerNumber()-1], s.transform.position, Quaternion.identity);
+			pawn.Initialize(player, this);
 			pawn.transform.rotation = Quaternion.Euler(-90, 0, 0);
-			pawns.Add(new Pawn(pawn,player,this));
+			pawns.Add(pawn);
 			occupaedSpawnPoints.Add(true);
 		}
 		player.SetPawns(pawns);

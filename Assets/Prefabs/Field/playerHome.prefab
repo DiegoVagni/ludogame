@@ -204,10 +204,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 2
   pawnPrefab:
-  - {fileID: 4561082905093615272, guid: af2f048211aa37d4694fcdf4d1200e26, type: 3}
-  - {fileID: 1854050655795578295, guid: 92cdfc05acb6f344cb1f11fc362be2b8, type: 3}
-  - {fileID: 2288030642973535467, guid: 2a9390a736176c94db81493a8ffbd8aa, type: 3}
-  - {fileID: 5495703366883393808, guid: d920114bce63d19479315c273b1de6ae, type: 3}
+  - {fileID: -2373360175942961608, guid: af2f048211aa37d4694fcdf4d1200e26, type: 3}
+  - {fileID: -45757324158110733, guid: 92cdfc05acb6f344cb1f11fc362be2b8, type: 3}
+  - {fileID: -6119069697635797830, guid: 2a9390a736176c94db81493a8ffbd8aa, type: 3}
+  - {fileID: 4977196815750586089, guid: d920114bce63d19479315c273b1de6ae, type: 3}
   spawnPoints:
   - {fileID: 814980460925997677}
   - {fileID: 8964594779176351703}

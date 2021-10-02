@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5482404486840952424}
   - component: {fileID: 5514013488511258280}
   - component: {fileID: 5525572329635864694}
+  - component: {fileID: 4977196815750586089}
   m_Layer: 0
   m_Name: p4
   m_TagString: Pawns
@@ -97,7 +98,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!65 &5525572329635864694
 BoxCollider:
@@ -112,3 +113,15 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.012928971, y: 0.012928973, z: 0.021267414}
   m_Center: {x: 2.3283063e-10, y: -3.5372777e-10, z: 0.010765273}
+--- !u!114 &4977196815750586089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5495703366883393808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c52882c82f98bfe4b8fabd7501e16b1e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
