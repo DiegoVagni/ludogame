@@ -27,6 +27,7 @@ public class HomeCell : PlayerCell {
 			if (!occupaedSpawnPoints[i]) { 
 			pawn.GetPawn().transform.position = spawnPoints[i].transform.position;
 				occupaedSpawnPoints[i] = true;
+				pawn.SetCurrentCell(this);
 			}		
 		} 
 	}
