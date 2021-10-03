@@ -85,7 +85,7 @@ public class Dice : MonoBehaviour
             }
 
             throws[result]++;
-            //diceRolled();
+            diceRolled();
         }
         // questo è meglio farlo in altra maniera
         else if (rb.velocity.magnitude != 0)

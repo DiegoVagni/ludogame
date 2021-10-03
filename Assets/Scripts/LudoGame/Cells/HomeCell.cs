@@ -14,7 +14,9 @@ public class HomeCell : PlayerCell {
 			Pawn pawn = Instantiate(pawnPrefab[player.GetPlayerNumber()-1], s.position, Quaternion.identity);
 			//unico punto dove non son riuscito a far convergere le informazioni. ma è in inizializzazione quindi va bene
 			pawn.Initialize(player, this);
+			pawn.GetPawn().AddComponent<PawnMouseInteractions>();
 			pawnInCell.Add(pawn);
+
 			
 			pawn.transform.rotation = Quaternion.Euler(-90, 0, 0);
 			

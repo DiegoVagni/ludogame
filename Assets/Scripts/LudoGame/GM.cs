@@ -1,41 +1,19 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Photon.Realtime;
-using Photon.Pun;
+using UnityEngine.UI;
 
 public class GM : MonoBehaviour
 {
-    private void OnEnable()
-    {
-        Dice.diceRolled += rollEnd;
-    }
+    [SerializeField] private TMPro.TextMeshProUGUI _currentPlayerText;
+    [SerializeField] private Button _rollDiceButton;
+    [SerializeField] private RawImage _diceCam;
+    [SerializeField] private List<Material> _pawnMaterials;
+    [SerializeField] private bool _automaticThrows;
 
-    private void OnDisable()
-    {
-        Dice.diceRolled -= rollEnd;
-    }
-
-    private void rollEnd()
-    {
-        if (!gameFinished)
-        {
-            int result = dice.GetResult();
-            //chose move for player.
-            Debug.Log("player " + currentPlayer.GetPlayerNumber() + "rolled a " + result);
-            if (result == 6)
-            {
-
-            }
-            currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
-
-            dice.RollDice();
-        }
-    }
-
-
-
-
+    private bool _mayStartRolling = false;
+    private bool _isDiceRolling = false;
 
     [SerializeField]
     private List<Material> playerMaterials;
@@ -43,12 +21,39 @@ public class GM : MonoBehaviour
     private Player currentPlayer;
     private List<Player> players;
     private bool gameFinished = false;
-   private bool whyAreYouRunning = false;
+    private bool isTurnGoing = false;
+
+    private void OnEnable()
+    {
+        Dice.diceRolled += rollingFinished;
+        _rollDiceButton.onClick.AddListener(requestRoll);
+    }
+
+    private void OnDisable()
+    {
+        _rollDiceButton.onClick.RemoveListener(requestRoll);
+        Dice.diceRolled -= rollingFinished;
+    }
+
+    private void rollingFinished()
+    {
+        _isDiceRolling = false;
+    }
+    private void requestRoll()
+    {
+        if (!_mayStartRolling && !gameFinished)
+        {
+            _diceCam.enabled = true;
+            _mayStartRolling = true;
+            _rollDiceButton.interactable = false;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         dice = GameObject.FindGameObjectWithTag("Dice").GetComponent<Dice>();
+        _diceCam.enabled = false;
 
         players = new List<Player>();
         List<Photon.Realtime.Player> punplayers = new List<Photon.Realtime.Player>(PhotonNetwork.PlayerList);
@@ -66,43 +71,41 @@ public class GM : MonoBehaviour
             }
         }
         currentPlayer = players[0];
-   
+
     }
     private void StartTurn()
     {
-     whyAreYouRunning = true;
-
-
-    //yield return new WaitForSeconds(1f);
-    //yield return new WaitUntil(() => !dice.IsRolling());
-    /*while (dice.IsRolling())
-    {
-        yield return new WaitForSeconds(0.5f);
-    }*/
-
-        
-    StartCoroutine("Turn");
+        isTurnGoing = true;
+        StartCoroutine("Turn");
     }
-      public IEnumerator Turn()
+    public IEnumerator Turn()
     {
+        _currentPlayerText.color = _pawnMaterials[currentPlayer.GetPlayerNumber() - 1].color;
+        _currentPlayerText.text = "Player " + currentPlayer.GetPlayerNumber();
+        if (_automaticThrows)
+        {
+            requestRoll();
+        }
+        yield return new WaitUntil(() => _mayStartRolling);
+        _mayStartRolling = false;
 
+        dice.RollDice();
+        _isDiceRolling = true;
 
-            dice.RollDice();
-            yield return new WaitForSeconds(1f);
-            yield return new WaitUntil(() => !dice.IsRolling());
-            while (dice.IsRolling())
-            {
-                yield return new WaitForSeconds(0.5f);
-            }
-            int result = dice.GetResult();
+        yield return new WaitUntil(() => !_isDiceRolling);
+
+        int result = dice.GetResult();
         //chose move for player.
         //Debug.Log("player " + currentPlayer.GetPlayerNumber() + "rolled a " + result);
         currentPlayer.ChooseMove(result);
-            currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
-            whyAreYouRunning = false;
-        }
+        currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
+        yield return new WaitForSeconds(0.5f);
+        _diceCam.enabled = false;
+        _rollDiceButton.interactable = true;
+        isTurnGoing = false;
+    }
 
-    
+
     // Update is called once per frame
     void Update()
     {
@@ -110,7 +113,7 @@ public class GM : MonoBehaviour
         {
             gameFinished = true;
         }
-        if (!gameFinished && !whyAreYouRunning && Time.frameCount > 10)
+        if (!gameFinished && !isTurnGoing && Time.frameCount > 10)
         {
             StartTurn();
         }
