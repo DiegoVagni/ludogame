@@ -29,15 +29,43 @@ public class Pawn : MonoBehaviour
 	public void SetCurrentCell(Cell cell) {
 		currentCell = cell;
 	}
+
 	public IEnumerator MovePawn(int steps) {
 		Cell endCell = currentCell;
-
 		for (int i = 0; i < steps; i++)
 		{
 			endCell = endCell.GetNextCell();
 			
 		}
-		yield return new WaitForEndOfFrame();
+		
+		Pawn pawnInCell = endCell.PawnInCell();
+		if (pawnInCell != null)
+		{
+			Player otherPawnPlayer = pawnInCell.GetPlayer();
+			if (otherPawnPlayer.GetPlayerNumber() != GetPlayer().GetPlayerNumber())
+			{
+				Debug.Log(GetPlayer().GetPlayerNumber() + " Gnammete " + otherPawnPlayer.GetPlayerNumber());
+				
+				otherPawnPlayer.GetHome().SendPawnToHome(pawnInCell);
+				pawnRigidBody.MovePosition(endCell.GetPawnPositions()[0].position);
+				
+			}
+			else
+			{
+
+				Debug.Log(GetPlayer().GetPlayerNumber() + " FUSIONE!");
+				pawnInCell.GetComponent<Rigidbody>().MovePosition(endCell.GetPawnPositions()[1].position);
+				pawnRigidBody.MovePosition(endCell.GetPawnPositions()[2].position);
+				
+				currentCell.ExitPawn(this, endCell);
+			}
+		}
+		else {
+			
+			pawnRigidBody.MovePosition(endCell.GetPawnPositions()[0].position);
+			currentCell.ExitPawn(this, endCell);
+		}
+		/*yield return new WaitForEndOfFrame();
 		RaycastHit hit;
 		if (Physics.Raycast(endCell.transform.position, Vector3.up, out hit, 90))
 		{ 
@@ -56,14 +84,14 @@ public class Pawn : MonoBehaviour
 				}
 				Debug.Log(hit.collider.gameObject.GetComponent<Pawn>().GetPlayer().GetPlayerNumber());
 			}
-		}
+		}*/
 		yield return new WaitForEndOfFrame();
 
-			pawnRigidBody.MovePosition(endCell.transform.position + new Vector3(0, 1, 0));
-			currentCell = endCell;
 		
 	}
-	
+	public void ReturnToHome(Cell home) {
+		currentCell.ExitPawn(this, home);
+	}
 	public void Move(int steps) {
 		StartCoroutine(MovePawn(steps));
 		
