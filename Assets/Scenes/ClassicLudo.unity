@@ -205,7 +205,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: db3c616652d724448b039019f960d846, type: 2}
   - {fileID: 2100000, guid: 2c82f99153b122c4185181d3048254b4, type: 2}
   - {fileID: 2100000, guid: c8353fc68f6c03b4caca54d933e2fb44, type: 2}
-  _automaticThrows: 0
+  _automaticThrows: 1
   playerMaterials:
   - {fileID: 2100000, guid: 1f9d4d3514b1f44b9bd79b1ad1ac5141, type: 2}
   - {fileID: 2100000, guid: 4373d013d768c4034bd89af6cfffed58, type: 2}
@@ -821,7 +821,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cellPrefab: {fileID: 6234614897653981703, guid: d8fa1394fb8d95e47a3198e41fa29b7c, type: 3}
   playerCellPrefab: {fileID: -3082674134426201399, guid: 00b388c745a1017439847c004298f241, type: 3}
-  finishCell: {fileID: 5049927688177939466, guid: e25286247075da74bb40081b4fadadd6, type: 3}
+  finishCell: {fileID: 8480361557583809582, guid: e25286247075da74bb40081b4fadadd6, type: 3}
   homeCell: {fileID: 5042997244417680988, guid: 0e06d0bb5b89bb444b92c1158371b678, type: 3}
   cellDistance: 0.1
   segmentInstructions:
