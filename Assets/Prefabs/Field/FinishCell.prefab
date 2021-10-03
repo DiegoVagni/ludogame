@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3180766791693592218}
   - component: {fileID: 5704460192110936834}
   - component: {fileID: 3810035180103349112}
-  - component: {fileID: 5049927688177939466}
+  - component: {fileID: 8480361557583809582}
   m_Layer: 0
   m_Name: FinishCell
   m_TagString: Untagged
@@ -309,7 +309,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
---- !u!114 &5049927688177939466
+--- !u!114 &8480361557583809582
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -318,7 +318,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 579921993364049837}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58f0d1b17789c0f4bbc15b73d810b178, type: 3}
+  m_Script: {fileID: 11500000, guid: 5f712e2c2cb220f4098e4a0f3eecce1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
@@ -327,7 +327,6 @@ MonoBehaviour:
   - {fileID: 136494066918949645}
   - {fileID: 8153017017338063533}
   - {fileID: 6213557597898881272}
-  sys: {fileID: 0}
 --- !u!1 &6396070912754239261
 GameObject:
   m_ObjectHideFlags: 0

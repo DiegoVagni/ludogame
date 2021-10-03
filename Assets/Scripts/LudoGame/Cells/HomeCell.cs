@@ -33,6 +33,7 @@ public class HomeCell : PlayerCell {
 			pawn.transform.position = pawnPosition[i].position;
 				occupaedSpawnPoints[i] = true;
 				pawn.ReturnToHome(this);
+				break;
 			}		
 		} 
 	}

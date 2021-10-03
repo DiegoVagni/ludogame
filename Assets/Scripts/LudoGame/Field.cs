@@ -131,12 +131,24 @@ public class Field : MonoBehaviour
 			currentPlayer = gameManager.GetPlayers()[playerIndex];
 			ScriptableSegment ms = middleSegment[junctions.IndexOf(j)];
 			Vector3 pos = j.GetPosition() + ms.GetAxis() + ms.GetAxis() * cellDistance;
-			for (int i = 0; i < ms.GetNumberOfCells(); i++)
+			for (int i = 0; i <= ms.GetNumberOfCells(); i++)
 			{
+				if (i == ms.GetNumberOfCells())
+				{
+					pos = path[path.Count - 1].GetPosition() + ms.GetAxis() + ms.GetAxis() * (cellDistance + 0.15f);
+					Quaternion rotation = Quaternion.Euler(90, 90 * ((playerIndex + 2) % 4), 0);
+					PlayerCell finish = Instantiate(finishCell, pos, rotation);
+					finish.transform.SetParent(transform);
+
+					finish.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();
+					finish.AddIntersection(CellIntersections.Prev, path[path.Count - 1]);
+					path[path.Count - 1].AddIntersection(CellIntersections.Next, finish);
+					path.Add(finish);
+				}
+				else { 
 				PlayerCell c = Instantiate(playerCellPrefab, pos, Quaternion.identity);
 				c.transform.SetParent(transform);
 				c.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();
-				path.Add(c);
 				if (i == 0)
 				{
 					j.AddIntersection(CellIntersections.Color, c);
@@ -147,8 +159,10 @@ public class Field : MonoBehaviour
 					c.AddIntersection(CellIntersections.Prev, path[path.Count - 1]);
 					path[path.Count - 1].AddIntersection(CellIntersections.Next, c);
 				}
+				path.Add(c);
 				pos = path[path.Count - 1].GetPosition() + ms.GetAxis() + ms.GetAxis() * cellDistance;
 			}
+				}
 			bool settedHome = false;
 			foreach (PlayerCell s in start)
 			{
@@ -192,15 +206,7 @@ public class Field : MonoBehaviour
 			}
 			//adding player cell
 			//lo schifo ma è semplice così
-			pos = path[path.Count - 1].GetPosition() + ms.GetAxis() + ms.GetAxis() * (cellDistance + 0.15f);
-			Quaternion rotation = Quaternion.Euler(90, 90 * ((playerIndex + 2) % 4), 0);
-			PlayerCell finish = Instantiate(finishCell, pos, rotation);
-			finish.transform.SetParent(transform);
-
-			finish.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();
-			finish.AddIntersection(CellIntersections.Prev, path[path.Count - 1]);
-			path[path.Count - 1].AddIntersection(CellIntersections.Next, finish);
-			path.Add(finish);
+		
 
 			playerIndex++;
 

@@ -20,9 +20,12 @@ public class GM : MonoBehaviour
     private Dice dice;
     private Player currentPlayer;
     private List<Player> players;
-    private bool gameFinished = false;
+    private static bool gameFinished = false;
     private bool isTurnGoing = false;
-
+//scusa fra è giusto al volo per quando finisce il gioco così testo
+public static void EndGame() {
+        gameFinished = true;
+}
     private void OnEnable()
     {
         Dice.diceRolled += rollingFinished;
@@ -109,10 +112,7 @@ public class GM : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (/*Time.frameCount >10000*/false)
-        {
-            gameFinished = true;
-        }
+      
         if (!gameFinished && !isTurnGoing && Time.frameCount > 10)
         {
             StartTurn();
