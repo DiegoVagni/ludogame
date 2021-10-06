@@ -107,7 +107,7 @@ public class Field : MonoBehaviour
 					instantiatedCell = Instantiate(cellPrefab, pos, Quaternion.identity);
 				}
 				instantiatedCell.transform.SetParent(transform);
-
+				instantiatedCell.name = lastIndex.ToString();
 				if (path.Count > 0)
 				{
 					Cell lastCell = path[lastIndex];
@@ -193,6 +193,7 @@ public class Field : MonoBehaviour
 							settedHome = true;
 							HomeCell home = Instantiate(homeCell, pos, Quaternion.identity);
 							home.SpawnPawns(currentPlayer);
+							home.transform.SetParent(transform);
 							home.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();
 							home.AddIntersection(CellIntersections.Next, s);
 							s.AddIntersection(CellIntersections.Prev, home);

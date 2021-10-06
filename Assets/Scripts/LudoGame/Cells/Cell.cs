@@ -34,6 +34,9 @@ public class Cell : MonoBehaviour
     }
     public void ExitPawn(Pawn p, Cell finalCell = null) {
         pawnInCell.Remove(p);
+     
+        PositionPawnsInCell();
+
         if (finalCell == null)
         {
             GetNextCell().EnterPawn(p);
@@ -48,16 +51,29 @@ public class Cell : MonoBehaviour
     public List<Transform> GetPawnPositions() {
         return pawnPosition;
     }
-    //se sono 2 pawn nella stessa cella son per forza dello stesso giocatore quindi per ora basta tornarne uno
-    public Pawn PawnInCell() {
-        if (pawnInCell.Count == 0) {
-            return null;
-        }
-        return pawnInCell[0];
-    }
+
     private void EnterPawn(Pawn p) {
         p.SetCurrentCell(this);
         pawnInCell.Add(p);
+        PositionPawnsInCell();
+    }
+    protected void PositionPawnsInCell() {
+        if(type != CellType.Home) { 
+        if (pawnInCell.Count == 1)
+        {
+            pawnInCell[0].GetRigidbody().MovePosition(pawnPosition[0].position);
+        }
+        else if(pawnInCell.Count == 2)
+        {
+            Pawn currentPawn;
+            //trustami, è settato così da editor
+            for (int i = 0; i < 2; i++)
+            {
+                currentPawn = pawnInCell[i];
+                currentPawn.GetRigidbody().MovePosition(pawnPosition[i + 1].position);
+            }
+        }
+        }
     }
     public CellType GetCellType() {
         return type;
@@ -65,7 +81,9 @@ public class Cell : MonoBehaviour
     public void SetType(CellType t) {
         type = t;
     }
-
+    public List<Pawn> GetPawnsInCell() {
+        return pawnInCell;
+    }
 	internal Cell GetNextCell()
 	{
         return intersections[CellIntersections.Next];

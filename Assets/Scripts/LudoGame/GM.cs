@@ -106,6 +106,7 @@ public static void EndGame() {
         _diceCam.enabled = false;
         _rollDiceButton.interactable = true;
         isTurnGoing = false;
+        Debug.Log("_________________________________________");
     }
 
 

@@ -4,27 +4,27 @@ using UnityEngine;
 
 public class Move
 {
-    private int steps;
+   
 	private Cell finishCell;
-	private Pawn pawn;
+	private List<Pawn> pawns;
 
-	public Move(int steps, Cell finishCell, Pawn pawn)
+	public Move(Cell finishCell, Pawn pawn, Pawn secondPawn = null)
 	{
-		this.steps = steps;
+	
 		this.finishCell = finishCell;
-		this.pawn = pawn;
+		pawns = new List<Pawn>();
+		pawns.Add(pawn);
+		if (secondPawn != null) {
+			pawns.Add(secondPawn);
+		}
 	}
-
-	public int GetSteps() {
-		return steps;
-	}
-
+	
 	public Cell GetFinishCell() {
 		return finishCell;
 	}
 
-	public Pawn GetPawn() {
-		return pawn;
+	public List<Pawn> GetPawn() {
+		return pawns;
 	}
 
 	

@@ -5,46 +5,33 @@ using UnityEngine;
 public class HomeCell : PlayerCell {
 	[SerializeField]
 	private List<Pawn> pawnPrefab;
-	
-	private List<bool> occupaedSpawnPoints;
+
 	public void SpawnPawns(Player player) {
 		List<Pawn> pawns = new List<Pawn>();
-		occupaedSpawnPoints = new List<bool>();
+		int index = 0;
 		foreach (Transform s in pawnPosition) {
 			Pawn pawn = Instantiate(pawnPrefab[player.GetPlayerNumber()-1], s.position, Quaternion.identity);
 			//unico punto dove non son riuscito a far convergere le informazioni. ma è in inizializzazione quindi va bene
-			pawn.Initialize(player, this);
+			pawn.Initialize(player, this, player.GetPlayerNumber() + "_"+index+"Pawn",index);
 			pawn.GetPawn().AddComponent<PawnMouseInteractions>();
 			pawnInCell.Add(pawn);
-
+			
 			
 			pawn.transform.rotation = Quaternion.Euler(-90, 0, 0);
 			
 			pawns.Add(pawn);
-			occupaedSpawnPoints.Add(true);
+			index++;
 		}
 		player.SetPawns(pawns);
 	}
-	
-	public void SendPawnToHome(Pawn pawn) {
 
-		for (int i = 0; i < pawnPosition.Count; i++) {
-			if (!occupaedSpawnPoints[i]) { 
-			pawn.transform.position = pawnPosition[i].position;
-				occupaedSpawnPoints[i] = true;
-				pawn.ReturnToHome(this);
-				break;
-			}		
-		} 
+
+	public void SendPawnToHome(Pawn pawn) {
+		pawn.transform.position = pawnPosition[pawn.GetPawnNumber()].position;
 	}
 	public void ExitPawnToHome(Pawn pawn)
 	{
-		for (int i = 0; i < pawnPosition.Count; i++) {
-			if (pawn == pawnInCell[i]) {
-				pawn.Move(1);
-				occupaedSpawnPoints[i] = false;
-				break;
-			}
-		}
+		Debug.Log("exiting to home " + pawn.GetPawnName());
+		pawn.MoveCoroutine(intersections[CellIntersections.Next]);	
 	}
 }

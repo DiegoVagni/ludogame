@@ -12,106 +12,120 @@ public class Player
     private List<Pawn> pawns;
     private Photon.Realtime.Player photonPlayer;
     private HomeCell home;
+    private System.Random r;
  
+    //initialization
     public Player(Material mat,Photon.Realtime.Player photonPlayer=null)
 	{
+        r = new System.Random();
         this.mat = mat;
         playerNumber = players;
         this.photonPlayer = photonPlayer;
         players++;
 	}
+    // Destructor
+    ~Player()
+    {
+        players--;
+    }
+    //getter
     public Material GetMaterial() {
         return mat;
     }
     public int GetPlayerNumber() {
         return playerNumber;
     }
-    public void SetHome(HomeCell home)
-	{
-
-        this.home = home;
-	}
-    public HomeCell GetHome() {
+    public HomeCell GetHome()
+    {
         return home;
     }
-    public PlayerCell GetStart() {
+    public PlayerCell GetStart()
+    {
         return (PlayerCell)home.GetConnectedCells()[CellIntersections.Next];
     }
-    // Destructor
-    ~Player()
-    {
-        players--;
-    }
+    //setter
+    public void SetHome(HomeCell home)
+	{
+        this.home = home;
+	}
     public void SetPawns(List<Pawn> pawns) {
         this.pawns = pawns;
  
     }
+    public List<List<Pawn>> GetFusedPawns() {
+        List<List<Pawn>> result = null;
+        foreach (Pawn p in pawns) {
+            if (p.GetFused()) {
+                if (result == null) {
+                    result = new List<List<Pawn>>();
+                }
+                List<Pawn> couple = p.GetCurrentCell().GetPawnsInCell();
+                result.Add(couple);
+            }
+        }
+        return result;
+    }
+
+    //interaction
     public void StampPlayer() {
         Debug.Log("Player " + playerNumber + " is known as " + photonPlayer.NickName);
     }
-    public Pawn GetPawnInHome() {
-        foreach (Pawn p in pawns) {
-            if (p.GetCurrentCell().GetCellType() == CellType.Home) {
-                
-                return p;
-            }
-        }
-        return null;
-    }
-    public Pawn GetPawnOutOfHome() {
-        foreach (Pawn p in pawns)
-        {
-            
-            
-            if (p.GetCurrentCell().GetCellType() != CellType.Home && p.GetCurrentCell().GetCellType() != CellType.Finish)
-            {
-                return p;
-            }
-        }
-        return null;
-    }
+    //logic
     public void ChooseMove(int diceNumber) {
-        if (diceNumber == 6)
-        {
-            foreach (Pawn p in pawns)
+        List<Move> possibleMoves = new List<Move>();
+        Debug.Log(diceNumber);
+        if (diceNumber % 2 == 0) {
+            Debug.Log("i throw a multiple of two");
+        List<List<Pawn>> fusedPawns = GetFusedPawns();
+            if (fusedPawns != null)
             {
-              
-                if (p.GetCurrentCell().GetCellType() == CellType.Start)
+                foreach (List<Pawn> couple in fusedPawns)
                 {
-                    p.Move(diceNumber);
-                    return;
+                    Move checkPossibleMove = couple[0].MoveCouple(diceNumber);
+                    if (checkPossibleMove != null)
+                    {
+                        possibleMoves.Add(checkPossibleMove);
+                    }
                 }
             }
-            Pawn pawnToMove = GetPawnInHome();
-            if (pawnToMove != null)
-            {
-                home.ExitPawnToHome(pawnToMove);
-                return;
+            else {
+                Debug.Log("no fused pawns");
             }
-            else
-            {
-                pawnToMove = GetPawnOutOfHome();
-                pawnToMove.Move(diceNumber);
-                return;
-            }
-
         }
-        else {
-            foreach (Pawn p in pawns)
-            {
-
-                if (p.GetCurrentCell().GetCellType() == CellType.Start)
-                {
-                    p.Move(diceNumber);
-                    return;
+        foreach (Pawn p in pawns) {
+            if (!p.GetFused()) {
+                Move possibleMove;
+                switch (p.GetCurrentCell().GetCellType()) {
+                    case CellType.Finish: break; 
+                    case CellType.Home:
+                        if (diceNumber == 6 && GetStart().GetNumberOfPawns() <2) {                      
+                                possibleMoves.Add(new Move(GetStart(), p));
+                        }
+                        break;
+                    default:
+                        possibleMove = p.Move(diceNumber);
+                        if (possibleMove != null) { 
+                        
+                        possibleMoves.Add(possibleMove);
+                        }
+                        break;
                 }
             }
-            if (GetPawnOutOfHome() != null) {
-                GetPawnOutOfHome().Move(diceNumber);
-                return;
+        }
+     
+        if (possibleMoves.Count > 0) {
+            Move randomMove = possibleMoves[r.Next(possibleMoves.Count)];
+            foreach (Pawn p in randomMove.GetPawn()) {
+            Debug.Log("choosen move: " + p.GetPawnName() + " wants to move to " + randomMove.GetFinishCell().name + " from " + p.GetCurrentCell().name );
+                if(randomMove.GetFinishCell().GetCellType() ==CellType.Start && p.GetCurrentCell().GetCellType() == CellType.Home && randomMove.GetFinishCell().GetNumberOfPawns() < 2)
+				{
+                    home.ExitPawnToHome(p);
+				}
+				else
+				{
+                p.MoveCoroutine(randomMove.GetFinishCell());
+				}
             }
         }
     }
-
-	
 }
