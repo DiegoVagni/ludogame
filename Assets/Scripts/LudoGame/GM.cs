@@ -120,13 +120,14 @@ public class GM : MonoBehaviour
             yield return new WaitUntil(() => _pickedPawn != null);
         }
         _pickedPawn = null;
-        currentPlayer.clearPawnSuggestions();
         currentPlayer.ChooseMove(result);
+        currentPlayer.clearPawnSuggestions();
         currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
         //yield return new WaitForSeconds(10f);
         _diceCam.enabled = false;
         _rollDiceButton.interactable = true;
         isTurnGoing = false;
+        Debug.Log("_________________________________________");
     }
 
 
