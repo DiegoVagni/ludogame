@@ -5,98 +5,105 @@ using UnityEngine;
 public class Pawn : MonoBehaviour
 {
 
-	private Rigidbody pawnRigidBody;
-	private Player player;
-	private Cell currentCell;
+    private Rigidbody pawnRigidBody;
+    private Player player;
+    private Cell currentCell;
 
 
-	public void Initialize(Player player, Cell currentCell)
-	{
-		pawnRigidBody = GetComponent<Rigidbody>();
-		this.player = player;
-		this.currentCell = currentCell;
-	}
-	public GameObject GetPawn()
-	{
-		return gameObject;
-	}
+    public void Initialize(Player player, Cell currentCell)
+    {
+        pawnRigidBody = GetComponent<Rigidbody>();
+        this.player = player;
+        this.currentCell = currentCell;
+    }
+    public GameObject GetPawn()
+    {
+        return gameObject;
+    }
 
-	public Player GetPlayer()
-	{
-		return player;
-	}
-	public Cell GetCurrentCell()
-	{
-		return currentCell;
-	}
-	public void SetCurrentCell(Cell cell)
-	{
-		currentCell = cell;
-	}
+    public Player GetPlayer()
+    {
+        return player;
+    }
+    public Cell GetCurrentCell()
+    {
+        return currentCell;
+    }
+    public void SetCurrentCell(Cell cell)
+    {
+        currentCell = cell;
+    }
 
-	public IEnumerator MovePawn(int steps)
-	{
-		Cell endCell = currentCell;
-		for (int i = 0; i < steps; i++)
-		{
-			if (endCell.GetCellType() == CellType.Junction && ((PlayerCell)endCell).GetPlayer().GetPlayerNumber() == player.GetPlayerNumber())
-			{
-				Debug.Log("entrando nella junction con " + player.GetPlayerNumber());
-				endCell = endCell.GetConnectedCells()[CellIntersections.Color];
-				Debug.Log(endCell.GetCellType());
-			}
-			else
-			{
-				if (endCell.GetCellType() == CellType.Finish) {
-					break;
-				}
-				endCell = endCell.GetNextCell();
-			}
+    public Cell getEndCell(int steps)
+    {
+        Cell endCell = currentCell;
+        for (int i = 0; i < steps; i++)
+        {
+            if (endCell.GetCellType() == CellType.Junction && ((PlayerCell)endCell).GetPlayer().GetPlayerNumber() == player.GetPlayerNumber())
+            {
+                Debug.Log("entrando nella junction con " + player.GetPlayerNumber());
+                endCell = endCell.GetConnectedCells()[CellIntersections.Color];
+                Debug.Log(endCell.GetCellType());
+            }
+            else
+            {
+                if (endCell.GetCellType() == CellType.Finish)
+                {
+                    break;
+                }
+                endCell = endCell.GetNextCell();
+            }
+        }
+        return endCell;
+    }
 
-		}
-		if (endCell.GetCellType() == CellType.Finish)
-		{
-			((FinishCell)endCell).EndPawn(this);
-		}
-		else
-		{
-			Pawn pawnInCell = endCell.PawnInCell();
-			if (pawnInCell != null)
-			{
-				Player otherPawnPlayer = pawnInCell.GetPlayer();
-				if (otherPawnPlayer.GetPlayerNumber() != GetPlayer().GetPlayerNumber())
-				{
-					if (pawnInCell.GetCurrentCell().GetCellType() == CellType.Safe && ((PlayerCell)pawnInCell.GetCurrentCell()).GetPlayer().GetPlayerNumber() == GetPlayer().GetPlayerNumber())
-					{
-						Debug.Log(GetPlayer().GetPlayerNumber() + " ha provato a Gnammete " + otherPawnPlayer.GetPlayerNumber() + " ma ha fallito perchè è nella safeZone quindi perde il turno");
-					}
-					else
-					{
+    public IEnumerator MovePawn(int steps)
+    {
+        Cell endCell = getEndCell(steps);
 
-						Debug.Log(GetPlayer().GetPlayerNumber() + " Gnammete " + otherPawnPlayer.GetPlayerNumber());
+        if (endCell.GetCellType() == CellType.Finish)
+        {
+            ((FinishCell)endCell).EndPawn(this);
+        }
+        else
+        {
+            Pawn pawnInCell = endCell.PawnInCell();
+            if (pawnInCell != null)
+            {
+                Player otherPawnPlayer = pawnInCell.GetPlayer();
+                if (otherPawnPlayer.GetPlayerNumber() != GetPlayer().GetPlayerNumber())
+                {
+                    if (pawnInCell.GetCurrentCell().GetCellType() == CellType.Safe && ((PlayerCell)pawnInCell.GetCurrentCell()).GetPlayer().GetPlayerNumber() == GetPlayer().GetPlayerNumber())
+                    {
+                        Debug.Log(GetPlayer().GetPlayerNumber() + " ha provato a Gnammete " + otherPawnPlayer.GetPlayerNumber() + " ma ha fallito perchè è nella safeZone quindi perde il turno");
+                    }
+                    else
+                    {
 
-						otherPawnPlayer.GetHome().SendPawnToHome(pawnInCell);
-						pawnRigidBody.MovePosition(endCell.GetPawnPositions()[0].position);
-					}
+                        Debug.Log(GetPlayer().GetPlayerNumber() + " Gnammete " + otherPawnPlayer.GetPlayerNumber());
 
-				}
-				else
-				{
+                        otherPawnPlayer.GetHome().SendPawnToHome(pawnInCell);
+                        pawnRigidBody.MovePosition(endCell.GetPawnPositions()[0].position);
+                    }
 
-					Debug.Log(GetPlayer().GetPlayerNumber() + " FUSIONE!");
-					pawnInCell.GetComponent<Rigidbody>().MovePosition(endCell.GetPawnPositions()[1].position);
-					pawnRigidBody.MovePosition(endCell.GetPawnPositions()[2].position);
+                }
+                else
+                {
 
-					currentCell.ExitPawn(this, endCell);
-				}
-			}
-			else
-			{
+                    Debug.Log(GetPlayer().GetPlayerNumber() + " FUSIONE!");
+                    pawnInCell.GetComponent<Rigidbody>().MovePosition(endCell.GetPawnPositions()[1].position);
+                    pawnRigidBody.MovePosition(endCell.GetPawnPositions()[2].position);
 
-				pawnRigidBody.MovePosition(endCell.GetPawnPositions()[0].position);
-				currentCell.ExitPawn(this, endCell);
-			}
-			/*yield return new WaitForEndOfFrame();
+                    currentCell.ExitPawn(this, endCell);
+                }
+            }
+            else
+            {
+
+                pawnRigidBody.MovePosition(endCell.GetPawnPositions()[0].position);
+                currentCell.ExitPawn(this, endCell);
+            }
+            /*yield return new WaitForEndOfFrame();
 			RaycastHit hit;
 			if (Physics.Raycast(endCell.transform.position, Vector3.up, out hit, 90))
 			{ 
@@ -116,18 +123,18 @@ public class Pawn : MonoBehaviour
 					Debug.Log(hit.collider.gameObject.GetComponent<Pawn>().GetPlayer().GetPlayerNumber());
 				}
 			}*/
-		}
-		yield return new WaitForEndOfFrame();
+        }
+        yield return new WaitForEndOfFrame();
 
 
-	}
-	public void ReturnToHome(Cell home)
-	{
-		currentCell.ExitPawn(this, home);
-	}
-	public void Move(int steps)
-	{
-		StartCoroutine(MovePawn(steps));
+    }
+    public void ReturnToHome(Cell home)
+    {
+        currentCell.ExitPawn(this, home);
+    }
+    public void Move(int steps)
+    {
+        StartCoroutine(MovePawn(steps));
 
-	}
+    }
 }

@@ -6,14 +6,21 @@ using UnityEngine.InputSystem;
 
 public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    public delegate void PickAction(Pawn p);
+    public static event PickAction pawnPicked;
+
     private Material _material;
-    Color pawnColor;
+    private Color _pawnColor;
+
+    private Material _destinationCellMaterial = null;
+    private Color _destinationCellColor;
+    private bool _isMovable = false;
 
     // Start is called before the first frame update
     void Start()
     {
         _material = GetComponent<MeshRenderer>().material;
-        pawnColor = _material.color;
+        _pawnColor = _material.color;
     }
 
     // Update is called once per frame
@@ -22,16 +29,36 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
 
     }
 
+    public void assignDestinationCell(Cell cell)
+    {
+        _destinationCellMaterial = cell.gameObject.GetComponent<MeshRenderer>().material;
+        _destinationCellColor = _destinationCellMaterial.color;
+        this._isMovable = true;
+    }
+
     public void Hover()
     {
-        _material.EnableKeyword("_EMISSION");
-        _material.SetColor("_EmissionColor", pawnColor * 7);
-        DynamicGI.UpdateEnvironment();
+        Debug.Log("A");
+        if (_isMovable)
+        {
+            Debug.Log("B");
+            _material.EnableKeyword("_EMISSION");
+            _material.SetColor("_EmissionColor", _pawnColor * 7);
+
+            _destinationCellMaterial.EnableKeyword("_EMISSION");
+            _destinationCellMaterial.SetColor("_EmissionColor", _destinationCellColor * 7);
+
+            DynamicGI.UpdateEnvironment();
+        }
     }
 
     public void UnHover()
     {
         _material.DisableKeyword("_EMISSION");
+        if (_destinationCellMaterial != null)
+        {
+            _destinationCellMaterial.DisableKeyword("_EMISSION");
+        }
         DynamicGI.UpdateEnvironment();
     }
 
@@ -47,6 +74,14 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("Clicked");
+        if (_isMovable)
+        {
+            pawnPicked(this.gameObject.GetComponent<Pawn>());
+        }
+    }
+
+    public void clearCell()
+    {
+        _isMovable = false;
     }
 }

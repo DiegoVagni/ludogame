@@ -14,6 +14,7 @@ public class GM : MonoBehaviour
 
     private bool _mayStartRolling = false;
     private bool _isDiceRolling = false;
+    private Pawn _pickedPawn = null;
 
     [SerializeField]
     private List<Material> playerMaterials;
@@ -22,20 +23,23 @@ public class GM : MonoBehaviour
     private List<Player> players;
     private static bool gameFinished = false;
     private bool isTurnGoing = false;
-//scusa fra è giusto al volo per quando finisce il gioco così testo
-public static void EndGame() {
+    //scusa fra è giusto al volo per quando finisce il gioco così testo
+    public static void EndGame()
+    {
         gameFinished = true;
-}
+    }
     private void OnEnable()
     {
         Dice.diceRolled += rollingFinished;
         _rollDiceButton.onClick.AddListener(requestRoll);
+        PawnMouseInteractions.pawnPicked += pawnPicked;
     }
 
     private void OnDisable()
     {
         _rollDiceButton.onClick.RemoveListener(requestRoll);
         Dice.diceRolled -= rollingFinished;
+        PawnMouseInteractions.pawnPicked -= pawnPicked;
     }
 
     private void rollingFinished()
@@ -49,6 +53,14 @@ public static void EndGame() {
             _diceCam.enabled = true;
             _mayStartRolling = true;
             _rollDiceButton.interactable = false;
+        }
+    }
+
+    private void pawnPicked(Pawn p)
+    {
+        if (currentPlayer.GetPawns().Contains(p))
+        {
+            _pickedPawn = p;
         }
     }
 
@@ -85,10 +97,12 @@ public static void EndGame() {
     {
         _currentPlayerText.color = _pawnMaterials[currentPlayer.GetPlayerNumber() - 1].color;
         _currentPlayerText.text = "Player " + currentPlayer.GetPlayerNumber();
+
         if (_automaticThrows)
         {
             requestRoll();
         }
+
         yield return new WaitUntil(() => _mayStartRolling);
         _mayStartRolling = false;
 
@@ -100,9 +114,16 @@ public static void EndGame() {
         int result = dice.GetResult();
         //chose move for player.
         //Debug.Log("player " + currentPlayer.GetPlayerNumber() + "rolled a " + result);
+        bool hasMoves = currentPlayer.AssignMoves(result);
+        if (hasMoves)
+        {
+            yield return new WaitUntil(() => _pickedPawn != null);
+        }
+        _pickedPawn = null;
+        currentPlayer.clearPawnSuggestions();
         currentPlayer.ChooseMove(result);
         currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
-        yield return new WaitForSeconds(0.5f);
+        //yield return new WaitForSeconds(10f);
         _diceCam.enabled = false;
         _rollDiceButton.interactable = true;
         isTurnGoing = false;
@@ -112,7 +133,7 @@ public static void EndGame() {
     // Update is called once per frame
     void Update()
     {
-      
+
         if (!gameFinished && !isTurnGoing && Time.frameCount > 10)
         {
             StartTurn();

@@ -6,10 +6,10 @@ public class HomeCell : PlayerCell {
 	[SerializeField]
 	private List<Pawn> pawnPrefab;
 	
-	private List<bool> occupaedSpawnPoints;
+	private List<bool> occupiedSpawnPoints;
 	public void SpawnPawns(Player player) {
 		List<Pawn> pawns = new List<Pawn>();
-		occupaedSpawnPoints = new List<bool>();
+		occupiedSpawnPoints = new List<bool>();
 		foreach (Transform s in pawnPosition) {
 			Pawn pawn = Instantiate(pawnPrefab[player.GetPlayerNumber()-1], s.position, Quaternion.identity);
 			//unico punto dove non son riuscito a far convergere le informazioni. ma è in inizializzazione quindi va bene
@@ -21,7 +21,7 @@ public class HomeCell : PlayerCell {
 			pawn.transform.rotation = Quaternion.Euler(-90, 0, 0);
 			
 			pawns.Add(pawn);
-			occupaedSpawnPoints.Add(true);
+			occupiedSpawnPoints.Add(true);
 		}
 		player.SetPawns(pawns);
 	}
@@ -29,20 +29,20 @@ public class HomeCell : PlayerCell {
 	public void SendPawnToHome(Pawn pawn) {
 
 		for (int i = 0; i < pawnPosition.Count; i++) {
-			if (!occupaedSpawnPoints[i]) { 
+			if (!occupiedSpawnPoints[i]) { 
 			pawn.transform.position = pawnPosition[i].position;
-				occupaedSpawnPoints[i] = true;
+				occupiedSpawnPoints[i] = true;
 				pawn.ReturnToHome(this);
 				break;
 			}		
 		} 
 	}
-	public void ExitPawnToHome(Pawn pawn)
+	public void ExitPawnFromHome(Pawn pawn)
 	{
 		for (int i = 0; i < pawnPosition.Count; i++) {
 			if (pawn == pawnInCell[i]) {
 				pawn.Move(1);
-				occupaedSpawnPoints[i] = false;
+				occupiedSpawnPoints[i] = false;
 				break;
 			}
 		}
