@@ -121,7 +121,6 @@ public class Player
                         possibleMove = p.Move(diceNumber);
                         if (possibleMove != null)
                         {
-
                             possibleMoves.Add(possibleMove);
                         }
                         break;
@@ -132,24 +131,18 @@ public class Player
     }
 
     //logic
-    public void ChooseMove(int diceNumber)
+    public void ChooseMove(Move m)
     {
-        List<Move> possibleMoves = GetMoves(diceNumber);
-
-        if (possibleMoves.Count > 0)
+        foreach (Pawn p in m.GetPawn())
         {
-            Move randomMove = possibleMoves[r.Next(possibleMoves.Count)];
-            foreach (Pawn p in randomMove.GetPawn())
+            Debug.Log("choosen move: " + p.GetPawnName() + " wants to move to " + m.GetFinishCell().name + " from " + p.GetCurrentCell().name);
+            if (m.GetFinishCell().GetCellType() == CellType.Start && p.GetCurrentCell().GetCellType() == CellType.Home && m.GetFinishCell().GetNumberOfPawns() < 2)
             {
-                Debug.Log("choosen move: " + p.GetPawnName() + " wants to move to " + randomMove.GetFinishCell().name + " from " + p.GetCurrentCell().name);
-                if (randomMove.GetFinishCell().GetCellType() == CellType.Start && p.GetCurrentCell().GetCellType() == CellType.Home && randomMove.GetFinishCell().GetNumberOfPawns() < 2)
-                {
-                    home.ExitPawnFromHome(p);
-                }
-                else
-                {
-                    p.MoveCoroutine(randomMove.GetFinishCell());
-                }
+                home.ExitPawnFromHome(p);
+            }
+            else
+            {
+                p.MoveCoroutine(m.GetFinishCell());
             }
         }
     }
@@ -158,7 +151,7 @@ public class Player
         List<Move> moves = GetMoves(diceNumber);
         foreach (Move move in moves)
         {
-            move.GetPawn()[0].GetComponent<PawnMouseInteractions>().assignDestinationCell(move.GetFinishCell());
+            move.GetPawn()[0].GetComponent<PawnMouseInteractions>().assignPossibleMove(move);
         }
         return moves.Count > 0;
     }

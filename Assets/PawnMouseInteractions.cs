@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    public delegate void PickAction(Pawn p);
+    public delegate void PickAction(Move m);
     public static event PickAction pawnPicked;
 
     private Material _material;
@@ -14,7 +14,7 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
 
     private Material _destinationCellMaterial = null;
     private Color _destinationCellColor;
-    private bool _isMovable = false;
+    private Move _possibleMove = null;
 
     // Start is called before the first frame update
     void Start()
@@ -29,19 +29,17 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
 
     }
 
-    public void assignDestinationCell(Cell cell)
+    public void assignPossibleMove(Move m)
     {
-        _destinationCellMaterial = cell.gameObject.GetComponent<MeshRenderer>().material;
+        _destinationCellMaterial = m.GetFinishCell().gameObject.GetComponent<MeshRenderer>().material;
         _destinationCellColor = _destinationCellMaterial.color;
-        this._isMovable = true;
+        _possibleMove = m;
     }
 
     public void Hover()
     {
-        Debug.Log("A");
-        if (_isMovable)
+        if (_possibleMove!=null)
         {
-            Debug.Log("B");
             _material.EnableKeyword("_EMISSION");
             _material.SetColor("_EmissionColor", _pawnColor * 7);
 
@@ -74,14 +72,15 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (_isMovable)
+        if(_possibleMove!=null)
         {
-            pawnPicked(this.gameObject.GetComponent<Pawn>());
+            UnHover();
+            pawnPicked(_possibleMove);
         }
     }
 
     public void clearCell()
     {
-        _isMovable = false;
+        _possibleMove = null;
     }
 }

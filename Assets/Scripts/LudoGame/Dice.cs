@@ -23,8 +23,6 @@ public class Dice : MonoBehaviour
 
     private System.Random random;
     public bool isRolling = false;
-    [SerializeField] private int tries = 1;
-
 
     private int currentThrow = 0;
     private int result = 0;

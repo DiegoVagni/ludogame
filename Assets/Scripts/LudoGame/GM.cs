@@ -14,7 +14,7 @@ public class GM : MonoBehaviour
 
     private bool _mayStartRolling = false;
     private bool _isDiceRolling = false;
-    private Pawn _pickedPawn = null;
+    private Move _pickedMove = null;
 
     [SerializeField]
     private List<Material> playerMaterials;
@@ -56,12 +56,9 @@ public class GM : MonoBehaviour
         }
     }
 
-    private void pawnPicked(Pawn p)
+    private void pawnPicked(Move m)
     {
-        if (currentPlayer.GetPawns().Contains(p))
-        {
-            _pickedPawn = p;
-        }
+        _pickedMove = m;
     }
 
     // Start is called before the first frame update
@@ -112,18 +109,19 @@ public class GM : MonoBehaviour
         yield return new WaitUntil(() => !_isDiceRolling);
 
         int result = dice.GetResult();
-        //chose move for player.
-        //Debug.Log("player " + currentPlayer.GetPlayerNumber() + "rolled a " + result);
         bool hasMoves = currentPlayer.AssignMoves(result);
         if (hasMoves)
         {
-            yield return new WaitUntil(() => _pickedPawn != null);
+            yield return new WaitUntil(() => _pickedMove != null);
+            currentPlayer.ChooseMove(_pickedMove);
         }
-        _pickedPawn = null;
-        currentPlayer.ChooseMove(result);
+        else
+        {
+            //yield return new WaitForSeconds(0.5f);
+        }
+        _pickedMove = null;
         currentPlayer.clearPawnSuggestions();
         currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
-        //yield return new WaitForSeconds(10f);
         _diceCam.enabled = false;
         _rollDiceButton.interactable = true;
         isTurnGoing = false;
