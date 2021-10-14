@@ -38,8 +38,14 @@ public class LobbyManager : MonoBehaviourPunCallbacks
             UpdatePlayers();
         }
     }
-
+   
     public void StartGame() {
-        PhotonNetwork.LoadLevel("ClassicLudo");
+        PhotonView pw = PhotonView.Get(this);
+        pw.RPC("StartGameSync", RpcTarget.MasterClient);
+    }
+    [PunRPC]
+    public void StartGameSync() {
+            PhotonNetwork.AutomaticallySyncScene = true;
+            PhotonNetwork.LoadLevel("ClassicLudo");
     }
 }

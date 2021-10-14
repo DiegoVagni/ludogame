@@ -17,10 +17,17 @@ public class ServerConnecter : MonoBehaviourPunCallbacks
     [SerializeField]
     private InputField playerName;
     private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
-
+    [SerializeField]
+    private MasterManager m;
+    public void Awake() {
+        NetworkInstancer.Populate();
+    }
     // Start is called before the first frame update
-    void Start()
+    public void Start()
     {
+   
+        PhotonNetwork.GameVersion = m.GetGameSettings().GetGameVersion();
+        PhotonNetwork.NickName = m.GetGameSettings().GetNickname();
         PhotonNetwork.ConnectUsingSettings();
     }
 
@@ -31,26 +38,31 @@ public class ServerConnecter : MonoBehaviourPunCallbacks
     }
     public void CreateRoomButtonCallback()
 	{
-        if (playerName.text != "")
-        {
-
+      
             RoomOptions roomOptions = new RoomOptions();
             roomOptions.MaxPlayers = maxPlayers;
-            PhotonNetwork.LocalPlayer.NickName = playerName.text;
+        PhotonNetwork.LocalPlayer.NickName = GetPlayerName();
             PhotonNetwork.CreateRoom(createRoomName.text, roomOptions, null);
-        }else {
-            Debug.LogError("name can't be empty");
-        }
+        
     }
-
+    private string GetPlayerName() {
+        string name = null;
+        if (playerName.text != "")
+        {
+            name = playerName.text;
+        }
+        else
+        {
+            name = m.GetGameSettings().GetNickname();
+        }
+        return name;
+    }
     public void JoinRoomButtonCallback()
     {
-        if (playerName.text != "") {
-            PhotonNetwork.LocalPlayer.NickName = playerName.text;
+       
+            PhotonNetwork.LocalPlayer.NickName = GetPlayerName();
             PhotonNetwork.JoinRoom(dropDownRoomName.options[dropDownRoomName.value].text);
-        }else {
-            Debug.LogError("name can't be empty");
-        }
+
     }
     private void UpdateCachedRoomList(List<RoomInfo> roomList)
     {
@@ -80,6 +92,7 @@ public class ServerConnecter : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         PhotonNetwork.AutomaticallySyncScene = true;
+        Debug.Log(PhotonNetwork.LocalPlayer.NickName);
         PhotonNetwork.JoinLobby(TypedLobby.Default);
     }
 

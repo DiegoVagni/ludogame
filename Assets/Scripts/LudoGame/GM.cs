@@ -23,10 +23,18 @@ public class GM : MonoBehaviour
     private List<Player> players;
     private static bool gameFinished = false;
     private bool isTurnGoing = false;
+
+    //per debug
+    [SerializeField]
+    private List<NetworkedPrefab> prefabs;
     //scusa fra è giusto al volo per quando finisce il gioco così testo
     public static void EndGame()
     {
         gameFinished = true;
+    }
+    private void PopulateNetworkedPrefabs() {
+        NetworkInstancer.Populate();
+        prefabs = NetworkInstancer.GetInstance().GetPrefabs();
     }
     private void OnEnable()
     {
@@ -41,7 +49,9 @@ public class GM : MonoBehaviour
         Dice.diceRolled -= rollingFinished;
         PawnMouseInteractions.pawnPicked -= pawnPicked;
     }
-
+    public void Awake() {
+        PopulateNetworkedPrefabs();
+    }
     private void rollingFinished()
     {
         _isDiceRolling = false;

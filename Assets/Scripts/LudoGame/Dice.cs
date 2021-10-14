@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using Photon.Pun;
 
 public class Dice : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class Dice : MonoBehaviour
     private Quaternion startingRotation;
     private Vector3 startingScale;
 
-    FileLogger fileLogger = LoggerManager.GetInstance();
+    //FileLogger fileLogger = LoggerManager.GetInstance();
 
 
     private System.Random random;
@@ -106,9 +107,18 @@ public class Dice : MonoBehaviour
         transform.position = startingPosition;
         transform.rotation = startingRotation;
         transform.localScale = startingScale;
-        rb.AddForce(Vector3.up * random.Next(forceMin, forceMax),ForceMode.Impulse);
-        rb.AddTorque(new Vector3(random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax)), ForceMode.Impulse);
+        Vector3 upForce = Vector3.up * random.Next(forceMin, forceMax);
+        Vector3 torqueForce = new Vector3(random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax));
+        PhotonView pw = PhotonView.Get(this);
+        pw.RPC("RollDiceOnNetwork", RpcTarget.All,new object[] { upForce, torqueForce });
     }
 
-
+    [PunRPC]
+    //0 upForce, 1 torqueForce;
+    private void RollDiceOnNetwork(object[] param) {
+      
+            rb.AddForce((Vector3)param[0], ForceMode.Impulse);
+            rb.AddTorque((Vector3)param[1], ForceMode.Impulse);
+     
+    }
 }

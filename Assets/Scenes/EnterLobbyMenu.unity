@@ -348,6 +348,7 @@ MonoBehaviour:
   dropDownRoomName: {fileID: 1519452507}
   maxPlayers: 4
   playerName: {fileID: 537892416}
+  m: {fileID: 11400000, guid: 800460cd97dec774cb2b3ec469ee7406, type: 2}
 --- !u!4 &1006398928
 Transform:
   m_ObjectHideFlags: 0
