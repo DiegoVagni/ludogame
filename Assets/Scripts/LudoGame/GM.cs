@@ -15,6 +15,7 @@ public class GM : MonoBehaviour
     private bool _mayStartRolling = false;
     private bool _isDiceRolling = false;
     private Move _pickedMove = null;
+    private bool _hasMove = false;
 
     [SerializeField]
     private List<Material> playerMaterials;
@@ -96,6 +97,7 @@ public class GM : MonoBehaviour
         currentPlayer = players[0];
 
     }
+    [PunRPC]
     private void StartTurn()
     {
         isTurnGoing = true;
@@ -105,7 +107,7 @@ public class GM : MonoBehaviour
     {
         _currentPlayerText.color = _pawnMaterials[currentPlayer.GetPlayerNumber() - 1].color;
         _currentPlayerText.text = "Player " + currentPlayer.GetPlayerNumber();
-
+        _hasMove = false;
         if (_automaticThrows)
         {
             requestRoll();
@@ -123,11 +125,22 @@ public class GM : MonoBehaviour
         bool hasMoves = currentPlayer.AssignMoves(result);
         if (hasMoves)
         {
-            yield return new WaitUntil(() => _pickedMove != null);
-            currentPlayer.ChooseMove(_pickedMove);
+            if (PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName())
+            {
+                yield return new WaitUntil(() => _pickedMove != null);
+                PhotonView ps = PhotonView.Get(this);
+                Debug.LogError(_pickedMove.GetPawn()[0].GetPawnName());
+                ps.RPC("ChoosedMoveApplication", RpcTarget.All,new object[] { _pickedMove.GetPawn()[0].GetPawnName()});
+            }
+            else {
+                while (!_hasMove) {
+                    yield return new WaitForSeconds(0.5f);
+                }
+            }
         }
         else
         {
+            _hasMove = true;
             //yield return new WaitForSeconds(0.5f);
         }
         _pickedMove = null;
@@ -135,18 +148,35 @@ public class GM : MonoBehaviour
         currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
         _diceCam.enabled = false;
         _rollDiceButton.interactable = true;
+        PhotonView pw = PhotonView.Get(this);
+        pw.RPC("EndTurn",RpcTarget.All);
+       
+    }
+    [PunRPC]
+    public void ChoosedMoveApplication(string pawn) {
+        //pawname del pawn che si muove
+        Debug.LogError(pawn + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+       Pawn p = currentPlayer.GetPawn(pawn);
+        if (p == null) {
+            Debug.LogError("pawn " + pawn + " not found in " + currentPlayer.GetPlayerNumber());
+        }
+        currentPlayer.ChooseMove(p.GetComponent<PawnMouseInteractions>().GetPossibleMove());
+        _hasMove = true;
+    }
+    [PunRPC]
+    private void EndTurn() {
+  
         isTurnGoing = false;
         Debug.Log("_________________________________________");
     }
-
-
     // Update is called once per frame
     void Update()
     {
 
         if (!gameFinished && !isTurnGoing && Time.frameCount > 10)
         {
-            StartTurn();
+            PhotonView pw = PhotonView.Get(this);
+            pw.RPC("StartTurn", RpcTarget.All);
         }
     }
 

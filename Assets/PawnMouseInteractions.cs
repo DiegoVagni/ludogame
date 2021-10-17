@@ -78,7 +78,9 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
             pawnPicked(_possibleMove);
         }
     }
-
+    public Move GetPossibleMove() {
+        return _possibleMove;
+    }
     public void clearCell()
     {
         _possibleMove = null;

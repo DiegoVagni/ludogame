@@ -14,6 +14,15 @@ public class Player
 	private HomeCell home;
 	private System.Random r;
 
+	public string GetPhotonNickName() {
+		if (photonPlayer != null)
+		{
+			return photonPlayer.NickName;
+		}
+		else {
+			return playerNumber.ToString();
+		}
+	}
 	//initialization
 	public Player(Material mat, Photon.Realtime.Player photonPlayer = null)
 	{
@@ -161,6 +170,7 @@ public class Player
 				}
 			}
 	}
+	
 	public bool AssignMoves(int diceNumber)
 	{
 		List<Move> moves = GetMoves(diceNumber);
@@ -173,6 +183,17 @@ public class Player
 		}
 		return moves.Count > 0;
 	}
+
+	public Pawn GetPawn(string name) {
+		Debug.LogError(name);
+		foreach (Pawn p in pawns) {
+			if (p.GetPawnName() == name) {
+				return p;
+			}
+		}
+		return null;
+	}
+
 	public void clearPawnSuggestions()
 	{
 		foreach (Pawn p in pawns)
