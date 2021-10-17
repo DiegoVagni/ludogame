@@ -127,10 +127,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89eec2f8ef6f19a49b8ce6854a78cd8e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  torqueMin: -5000
-  torqueMax: 5000
-  forceMin: 70
-  forceMax: 150
+  torqueMin: -500
+  torqueMax: 500
+  forceMin: 2
+  forceMax: 10
   isRolling: 0
 --- !u!114 &7980965885826502022
 MonoBehaviour:

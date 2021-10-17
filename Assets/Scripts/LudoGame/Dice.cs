@@ -6,119 +6,131 @@ using Photon.Pun;
 
 public class Dice : MonoBehaviour
 {
-    public delegate void RollAction();
-    public static event RollAction diceRolled;
+	public delegate void RollAction();
+	public static event RollAction diceRolled;
 
-    private Rigidbody rb;
-    [SerializeField] private int torqueMin;
-    [SerializeField] private int torqueMax;
-    [SerializeField] private int forceMin;
-    [SerializeField] private int forceMax;
+	private Rigidbody rb;
+	[SerializeField] private int torqueMin;
+	[SerializeField] private int torqueMax;
+	[SerializeField] private int forceMin;
+	[SerializeField] private int forceMax;
 
-    private Vector3 startingPosition;
-    private Quaternion startingRotation;
-    private Vector3 startingScale;
+	private Vector3 startingPosition;
+	private Quaternion startingRotation;
+	private Vector3 startingScale;
 
-    //FileLogger fileLogger = LoggerManager.GetInstance();
+	//FileLogger fileLogger = LoggerManager.GetInstance();
 
 
-    private System.Random random;
-    public bool isRolling = false;
+	private System.Random random;
+	public bool isRolling = false;
 
-    private int currentThrow = 0;
-    private int result = 0;
-    public static int[] throws;
-    public static int finished;
-    private float prevVelocity = -1;
-    private float prevPrevVelocity = -1;
-    // Start is called before the first frame update
-    //sposta sto codice in un unittest
-    static Dice()
-    {
-        throws = new int[] { 0, 0, 0, 0, 0, 0, 0 };
-        finished = 0;
-    }
+	private int currentThrow = 0;
+	private int result = 0;
+	public static int[] throws;
+	public static int finished;
+	private float prevVelocity = -1;
+	private float prevPrevVelocity = -1;
+	// Start is called before the first frame update
+	//sposta sto codice in un unittest
+	static Dice()
+	{
+		throws = new int[] { 0, 0, 0, 0, 0, 0, 0 };
+		finished = 0;
+	}
 
-    void Start()
-    {
-        startingPosition = transform.position;
-        startingRotation = transform.rotation;
-        startingScale = transform.localScale;
-        random = new System.Random(Guid.NewGuid().GetHashCode());
-        rb = this.GetComponent<Rigidbody>();
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
-        if (isRolling && rb.velocity.magnitude == 0 && prevPrevVelocity == 0 &&prevVelocity == 0)
-        {
-            currentThrow++;
-            isRolling = false;
+	void Start()
+	{
+		startingPosition = transform.position;
+		startingRotation = transform.rotation;
+		startingScale = transform.localScale;
+		random = new System.Random(Guid.NewGuid().GetHashCode());
+		rb = this.GetComponent<Rigidbody>();
+	}
+	// Update is called once per frame
+	void Update()
+	{
 
-            //ordered: 0->1 , 1->2 , ... , 5->6
-            List<float> angles = new List<float>() {
-                Vector3.Angle(-transform.right, Vector3.up),
-                Vector3.Angle(transform.up, Vector3.up),
-                Vector3.Angle(transform.forward, Vector3.up),
-                Vector3.Angle(-transform.forward, Vector3.up),
-                Vector3.Angle(-transform.up, Vector3.up),
-                Vector3.Angle(transform.right, Vector3.up)
-            };
+		if (isRolling && rb.velocity.magnitude == 0 && prevPrevVelocity == 0 && prevVelocity == 0)
+		{
+			currentThrow++;
+			isRolling = false;
 
-            float min = float.MaxValue;
+			//ordered: 0->1 , 1->2 , ... , 5->6
+			List<float> angles = new List<float>() {
+				Vector3.Angle(-transform.right, Vector3.up),
+				Vector3.Angle(transform.up, Vector3.up),
+				Vector3.Angle(transform.forward, Vector3.up),
+				Vector3.Angle(-transform.forward, Vector3.up),
+				Vector3.Angle(-transform.up, Vector3.up),
+				Vector3.Angle(transform.right, Vector3.up)
+			};
 
-            for (int i = 0; i < angles.Count; i++)
-            {
-                if (angles[i] == 0)
-                {
-                    result = i + 1;
-                    break;
-                }
-                else if (Math.Abs(angles[i]) < min)
-                {
-                    min = Math.Abs(angles[i]);
-                    result = i + 1;
-                }
+			float min = float.MaxValue;
 
-            }
+			for (int i = 0; i < angles.Count; i++)
+			{
+				if (angles[i] == 0)
+				{
+					result = i + 1;
+					break;
+				}
+				else if (Math.Abs(angles[i]) < min)
+				{
+					min = Math.Abs(angles[i]);
+					result = i + 1;
+				}
 
-            throws[result]++;
-            diceRolled();
-        }
-        // questo è meglio farlo in altra maniera
-        else if (rb.velocity.magnitude != 0)
-        {
-            isRolling = true;
-        }
-        prevPrevVelocity = prevVelocity;
-        prevVelocity = rb.velocity.magnitude;
-    }
-    public bool IsRolling() {
-        return isRolling;
-    }
-    
-    public int GetResult()
-    {
-        return result;
-    }
-    public void RollDice()
-    {
-        transform.position = startingPosition;
-        transform.rotation = startingRotation;
-        transform.localScale = startingScale;
-        Vector3 upForce = Vector3.up * random.Next(forceMin, forceMax);
-        Vector3 torqueForce = new Vector3(random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax));
-        PhotonView pw = PhotonView.Get(this);
-        pw.RPC("RollDiceOnNetwork", RpcTarget.All,new object[] { upForce, torqueForce });
-    }
+			}
 
-    [PunRPC]
-    //0 upForce, 1 torqueForce;
-    private void RollDiceOnNetwork(object[] param) {
-      
-            rb.AddForce((Vector3)param[0], ForceMode.Impulse);
-            rb.AddTorque((Vector3)param[1], ForceMode.Impulse);
-     
-    }
+			throws[result]++;
+			diceRolled();
+		}
+		// questo è meglio farlo in altra maniera
+		else if (rb.velocity.magnitude != 0)
+		{
+			isRolling = true;
+		}
+		prevPrevVelocity = prevVelocity;
+		prevVelocity = rb.velocity.magnitude;
+	}
+	public bool IsRolling()
+	{
+		return isRolling;
+	}
+
+	public int GetResult()
+	{
+		return result;
+	}
+	public void RollDice()
+	{
+	
+		if (PhotonNetwork.IsMasterClient)
+		{
+		
+			Vector3 upForce = Vector3.up * random.Next(forceMin, forceMax);
+			Vector3 torqueForce = new Vector3(random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax), random.Next(torqueMin, torqueMax));
+
+		
+		PhotonView pw = PhotonView.Get(this);
+		pw.RPC("RollDiceOnNetwork", RpcTarget.All, new object[] { upForce, torqueForce });
+		}
+
+	}
+
+	[PunRPC]
+	//0 upForce, 1 torqueForce;
+	private void RollDiceOnNetwork(object[] param)
+	{
+		transform.position = startingPosition;
+		transform.rotation = startingRotation;
+		transform.localScale = startingScale;
+		Debug.Log("rolling dice");
+		Debug.Log((Vector3)param[0]);
+		Debug.Log((Vector3)param[1]);
+		rb.AddForce((Vector3)param[0], ForceMode.Impulse);
+		rb.AddTorque((Vector3)param[1], ForceMode.Impulse);
+
+	}
 }
