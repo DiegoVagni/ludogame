@@ -18,7 +18,7 @@ public class Dice : MonoBehaviour
     private Quaternion startingRotation;
     private Vector3 startingScale;
 
-    FileLogger fileLogger = LoggerManager.GetInstance();
+    //FileLogger fileLogger = LoggerManager.GetInstance();
 
 
     private System.Random random;
