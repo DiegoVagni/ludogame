@@ -1,8 +1,9 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pawn : MonoBehaviour
+public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
 {
 
     private Rigidbody pawnRigidBody;
@@ -20,6 +21,8 @@ public class Pawn : MonoBehaviour
         this.pawnName = pawnName;
         this.pawnNumber = pawnNumber;
     }
+
+
     //getter
     public int GetPawnNumber()
     {
@@ -212,5 +215,15 @@ public class Pawn : MonoBehaviour
     {
         StartCoroutine(MovePawn(finishCell));
 
+    }
+
+	public void OnPhotonInstantiate(PhotonMessageInfo info)
+	{
+        Player p = FindObjectOfType<GM>().GetPlayerByNumber((int)info.photonView.InstantiationData[0]);
+        Initialize(p, p.GetHome(), p.GetPlayerNumber() + "_" + (int)info.photonView.InstantiationData[1] + "Pawn", (int)info.photonView.InstantiationData[1]);
+        GetPawn().AddComponent<PawnMouseInteractions>();
+        transform.rotation = Quaternion.Euler(-90, 0, 0);
+        p.AddPawn(this);
+     
     }
 }

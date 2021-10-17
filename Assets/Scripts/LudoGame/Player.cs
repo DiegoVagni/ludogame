@@ -55,6 +55,18 @@ public class Player
 		this.pawns = pawns;
 
 	}
+	public void AddPawn(Pawn pawn)
+	{
+		if (pawns == null)
+		{
+			pawns = new List<Pawn>();
+		}
+		else if (pawns.Count > 4) {
+			Debug.LogError("ci son troppy pawns per il player " + playerNumber + " ne ha ben " + pawns.Count);		
+		}
+		pawns.Add(pawn);
+
+	}
 	public List<List<Pawn>> GetFusedPawns()
 	{
 		List<List<Pawn>> result = null;

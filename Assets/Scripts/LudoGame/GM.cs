@@ -48,8 +48,17 @@ public class GM : MonoBehaviour
     {
         _isDiceRolling = false;
     }
+    public Player GetPlayerByNumber(int pn) {
+
+        return players[pn - 1];
+    }
     private void requestRoll()
     {
+        PhotonView pw = PhotonView.Get(this);
+        pw.RPC("RequestRollRPC", RpcTarget.All);
+    }
+    [PunRPC]
+    private void RequestRollRPC() {
         if (!_mayStartRolling && !gameFinished)
         {
             _diceCam.enabled = true;

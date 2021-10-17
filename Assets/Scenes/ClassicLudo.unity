@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 205904242}
   - component: {fileID: 205904241}
   - component: {fileID: 205904243}
+  - component: {fileID: 205904244}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -193,6 +194,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23fa5d29f75cc2f4fbbc596fa9dfa977, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &205904244
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 205904240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents: []
+  sceneViewId: 2
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
 --- !u!1 &392349844
 GameObject:
   m_ObjectHideFlags: 0
@@ -1214,5 +1237,6 @@ PrefabInstance:
       propertyPath: sceneViewId
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5151047331091071640, guid: fede92b9fad96e64f992d409481e4555, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: fede92b9fad96e64f992d409481e4555, type: 3}

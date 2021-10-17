@@ -23,17 +23,12 @@ public class ServerConnecter : MonoBehaviourPunCallbacks
     // Start is called before the first frame update
     public void Start()
     {
-   
         PhotonNetwork.GameVersion = m.GetGameSettings().GetGameVersion();
         PhotonNetwork.NickName = m.GetGameSettings().GetNickname();
         PhotonNetwork.ConnectUsingSettings();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+
     public void CreateRoomButtonCallback()
 	{
       
