@@ -9,6 +9,9 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
     public delegate void PickAction(Move m);
     public static event PickAction pawnPicked;
 
+    private Texture2D _pointerCursorTexture;
+    private Vector2 _mouseTarget;
+
     private Material _material;
     private Color _pawnColor;
 
@@ -21,6 +24,11 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
     {
         _material = GetComponent<MeshRenderer>().material;
         _pawnColor = _material.color;
+
+        _pointerCursorTexture = (Texture2D)Resources.Load("Cursors/pointer");
+        
+        //35,0 son le coordinate in pixel del punto di indicatamento nell'immagine (al momento 128x128)
+        _mouseTarget = new Vector2(35, 0);
     }
 
     // Update is called once per frame
@@ -38,8 +46,10 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
 
     public void Hover()
     {
-        if (_possibleMove!=null)
+        if (_possibleMove != null)
         {
+            Cursor.SetCursor(_pointerCursorTexture, _mouseTarget, CursorMode.Auto);
+
             _material.EnableKeyword("_EMISSION");
             _material.SetColor("_EmissionColor", _pawnColor * 7);
 
@@ -52,6 +62,8 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
 
     public void UnHover()
     {
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+
         _material.DisableKeyword("_EMISSION");
         if (_destinationCellMaterial != null)
         {
@@ -72,7 +84,7 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if(_possibleMove!=null)
+        if (_possibleMove != null)
         {
             UnHover();
             pawnPicked(_possibleMove);
