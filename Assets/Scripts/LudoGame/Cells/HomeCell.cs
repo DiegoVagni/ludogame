@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +12,7 @@ public class HomeCell : PlayerCell {
 		List<Pawn> pawns = new List<Pawn>();
 		int index = 0;
 		foreach (Transform s in pawnPosition) {
-			Pawn pawn = Instantiate(pawnPrefab[player.GetPlayerNumber()-1], s.position, Quaternion.identity);
+			Pawn pawn = PhotonNetwork.Instantiate(pawnPrefab[player.GetPlayerNumber()-1].name, s.position, Quaternion.identity).GetComponent<Pawn>();
 			//unico punto dove non son riuscito a far convergere le informazioni. ma � in inizializzazione quindi va bene
 			pawn.Initialize(player, this, player.GetPlayerNumber() + "_"+index+"Pawn",index);
 			pawn.GetPawn().AddComponent<PawnMouseInteractions>();

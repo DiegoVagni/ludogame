@@ -19,9 +19,7 @@ public class ServerConnecter : MonoBehaviourPunCallbacks
     private Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
     [SerializeField]
     private MasterManager m;
-    public void Awake() {
-        NetworkInstancer.Populate();
-    }
+
     // Start is called before the first frame update
     public void Start()
     {

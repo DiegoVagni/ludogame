@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 5525572329635864694}
   - component: {fileID: 4977196815750586089}
   - component: {fileID: -3025574999718894414}
-  - component: {fileID: -5013990047609369113}
   m_Layer: 0
   m_Name: p4
   m_TagString: Pawns
@@ -149,16 +148,3 @@ MonoBehaviour:
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &-5013990047609369113
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5495703366883393808}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f61f423be4b5e347abcf055935f8809, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  prefab: {fileID: 5495703366883393808}
