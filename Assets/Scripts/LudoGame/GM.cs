@@ -117,6 +117,7 @@ public class GM : MonoBehaviour
             requestRoll();
         }
 
+        _rollDiceButton.interactable = PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName();
         yield return new WaitUntil(() => _mayStartRolling);
         _mayStartRolling = false;
 
@@ -158,9 +159,9 @@ public class GM : MonoBehaviour
         }
         _pickedMove = null;
         currentPlayer.clearPawnSuggestions();
+        //sarebbe come + 1 per il fatto che il conteggio parte da 1
         currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
         _diceCam.enabled = false;
-        _rollDiceButton.interactable = true;
         isTurnGoing = false;
 
     }
