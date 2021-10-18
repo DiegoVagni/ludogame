@@ -2,6 +2,7 @@ using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class GM : MonoBehaviour
@@ -125,6 +126,16 @@ public class GM : MonoBehaviour
         bool hasMoves = currentPlayer.AssignMoves(result);
         if (hasMoves)
         {
+            if (PhotonNetwork.IsMasterClient && currentPlayer.GetPlayerNumber().ToString() == currentPlayer.GetPhotonNickName()) {
+                Debug.Log("controllo l'ia");
+                foreach (Pawn p in currentPlayer.GetPawns()) {
+                    if (p.GetComponent<PawnMouseInteractions>().GetPossibleMove() != null) {
+                        //servono gli eventi
+                        ExecuteEvents.Execute<IPointerClickHandler>(p.GetPawn(),new PointerEventData(EventSystem.current), ExecuteEvents.pointerClickHandler);
+                        break;
+                    }
+                }
+            }
             if (PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName())
             {
                 yield return new WaitUntil(() => _pickedMove != null);
@@ -134,7 +145,7 @@ public class GM : MonoBehaviour
             }
             else {
                 while (!_hasMove) {
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitUntil(() => _hasMove);
                 }
             }
         }
@@ -155,7 +166,6 @@ public class GM : MonoBehaviour
     [PunRPC]
     public void ChoosedMoveApplication(string pawn) {
         //pawname del pawn che si muove
-        Debug.LogError(pawn + "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
        Pawn p = currentPlayer.GetPawn(pawn);
         if (p == null) {
             Debug.LogError("pawn " + pawn + " not found in " + currentPlayer.GetPlayerNumber());

@@ -13,6 +13,7 @@ public class Player
 	private Photon.Realtime.Player photonPlayer;
 	private HomeCell home;
 	private System.Random r;
+	private bool ai = false;
 
 	public string GetPhotonNickName() {
 		if (photonPlayer != null)
@@ -28,8 +29,9 @@ public class Player
 	{
 		r = new System.Random();
 		this.mat = mat;
-		playerNumber = players;
+		playerNumber = players; 
 		this.photonPlayer = photonPlayer;
+		
 		players++;
 	}
 	// Destructor
@@ -183,7 +185,9 @@ public class Player
 		}
 		return moves.Count > 0;
 	}
-
+	public bool IsAI() {
+		return ai;
+	}
 	public Pawn GetPawn(string name) {
 		Debug.LogError(name);
 		foreach (Pawn p in pawns) {

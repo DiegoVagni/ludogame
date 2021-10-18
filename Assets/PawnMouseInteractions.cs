@@ -28,7 +28,7 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
     {
 
     }
-
+    //aggiungere circa ovunque if(PhotonNetwork.localPlayer.NickName == currentPlayer.GetPhotonNickName()){}
     public void assignPossibleMove(Move m)
     {
         _destinationCellMaterial = m.GetFinishCell().gameObject.GetComponent<MeshRenderer>().material;
