@@ -147,7 +147,6 @@ public class GM : MonoBehaviour
             {
                 yield return new WaitUntil(() => _pickedMove != null);
                 PhotonView ps = PhotonView.Get(this);
-                Debug.LogError(_pickedMove.GetPawn()[0].GetPawnName());
                 ps.RPC("ChoosedMoveApplication", RpcTarget.All, new object[] { _pickedMove.GetPawn()[0].GetPawnName() });
             }
             yield return new WaitUntil(() => { return _hasMove; });

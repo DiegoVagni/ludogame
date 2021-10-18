@@ -165,7 +165,8 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
                 bool somethingToEat = false;
                 foreach (Pawn p in pawnsInCell)
                 {
-                    if (p.GetPlayer() != GetPlayer())
+                    //da testare bene
+                    if (p.GetPlayer() != GetPlayer() && (!p.GetFused() || fused))
                     {
                         somethingToEat = true;
                         break;
@@ -185,6 +186,7 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
                         }
                     }
                     pawnRigidBody.MovePosition(endCell.GetPawnPositions()[0].position);
+                    currentCell.ExitPawn(this, endCell);
                 }
                 else
                 {
