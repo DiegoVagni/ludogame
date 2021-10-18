@@ -13,6 +13,7 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
     private string pawnName;
     private int pawnNumber;
     //initialization
+
     public void Initialize(Player player, Cell currentCell, string pawnName, int pawnNumber)
     {
         pawnRigidBody = GetComponent<Rigidbody>();
@@ -217,13 +218,13 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
 
     }
 
-	public void OnPhotonInstantiate(PhotonMessageInfo info)
-	{
+    public void OnPhotonInstantiate(PhotonMessageInfo info)
+    {
         Player p = FindObjectOfType<GM>().GetPlayerByNumber((int)info.photonView.InstantiationData[0]);
         Initialize(p, p.GetHome(), p.GetPlayerNumber() + "_" + (int)info.photonView.InstantiationData[1] + "Pawn", (int)info.photonView.InstantiationData[1]);
         GetPawn().AddComponent<PawnMouseInteractions>();
         transform.rotation = Quaternion.Euler(-90, 0, 0);
         p.AddPawn(this);
-     
+
     }
 }
