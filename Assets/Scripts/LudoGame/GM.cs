@@ -159,7 +159,7 @@ public class GM : MonoBehaviour
         yield return new WaitUntil(() => !_isDiceRolling && _diceResult > 0 && !_diceThreads.Contains(false));
 
         //int result = dice.GetResult();
-        Debug.LogError(_diceResult + " vs " + dice.GetResult());
+       
         bool hasMoves = currentPlayer.AssignMoves(_diceResult, PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName());
         if (hasMoves)
         {

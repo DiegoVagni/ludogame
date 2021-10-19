@@ -191,7 +191,7 @@ public class Player
     }
     public Pawn GetPawn(string name)
     {
-        Debug.LogError(name);
+        
         foreach (Pawn p in pawns)
         {
             if (p.GetPawnName() == name)

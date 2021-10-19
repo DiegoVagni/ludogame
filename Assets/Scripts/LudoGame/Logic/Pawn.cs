@@ -67,31 +67,6 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
         Cell nextCell = currentCell;
         for (int i = 0; i < steps; i++)
         {
-            if (!fused)
-            {
-                if (nextCell.GetNumberOfPawns() == 2)
-                {
-                    if (nextCell.GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber() || steps - 1 == i)
-                    {
-                        return null;
-                    }
-                }
-                if (nextCell.GetNumberOfPawns() != 0 && nextCell.GetCellType() == CellType.Safe && ((PlayerCell)nextCell).GetPlayer().GetPlayerNumber() != GetPlayerNumber())
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                if (steps == i - 1)
-                {
-                    if ((nextCell.GetNumberOfPawns() > 0 && (nextCell.GetPawnsInCell()[0].GetPlayerNumber() == GetPlayerNumber()) || (nextCell.GetCellType() == CellType.Safe && ((PlayerCell)nextCell).GetPlayer().GetPlayerNumber() != GetPlayerNumber())))
-                    {
-                        return null;
-                    }
-                }
-
-            }
             if (nextCell.GetCellType() == CellType.Junction && ((PlayerCell)nextCell).GetPlayer().GetPlayerNumber() == player.GetPlayerNumber())
             {
                 Debug.Log("entrando nella junction con " + pawnName);
@@ -105,6 +80,31 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
                     return nextCell;
                 }
                 nextCell = nextCell.GetConnectedCells()[CellIntersections.Next];
+            }
+            if (!fused)
+            {
+                if (nextCell.GetNumberOfPawns() >= 2)
+                {
+                    if (nextCell.GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber() || (steps-1)==i)
+                    {
+                        return null;
+                    }
+                }
+                if (nextCell.GetNumberOfPawns() != 0 && nextCell.GetCellType() == CellType.Safe && ((PlayerCell)nextCell).GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber())
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                if (steps == i - 1)
+                {
+                    if ((nextCell.GetNumberOfPawns() > 0 && (nextCell.GetPawnsInCell()[0].GetPlayerNumber() == GetPlayerNumber()) || (nextCell.GetCellType() == CellType.Safe && ((PlayerCell)nextCell).GetPawnsInCell().Count>0 && ((PlayerCell)nextCell).GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber())))
+                    {
+                        return null;
+                    }
+                }
+
             }
         }
         return nextCell;
@@ -166,7 +166,7 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
                 foreach (Pawn p in pawnsInCell)
                 {
                     //da testare bene
-                    if (p.GetPlayer() != GetPlayer() && (!p.GetFused() || fused))
+                    if (p.GetPlayer() != GetPlayer() )
                     {
                         somethingToEat = true;
                         break;
