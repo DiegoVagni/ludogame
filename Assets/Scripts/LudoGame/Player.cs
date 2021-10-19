@@ -173,14 +173,14 @@ public class Player
         }
     }
 
-    public bool AssignMoves(int diceNumber)
+    public bool AssignMoves(int diceNumber, bool belongsToCurrentPlayer)
     {
         List<Move> moves = GetMoves(diceNumber);
         foreach (Move move in moves)
         {
             if (move.GetFinishCell() != null)
             {
-                move.GetPawn()[0].GetComponent<PawnMouseInteractions>().assignPossibleMove(move);
+                move.GetPawn()[0].GetComponent<PawnMouseInteractions>().assignPossibleMove(move, belongsToCurrentPlayer);
             }
         }
         return moves.Count > 0;

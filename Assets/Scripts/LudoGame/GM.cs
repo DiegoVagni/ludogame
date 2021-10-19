@@ -25,6 +25,7 @@ public class GM : MonoBehaviour
     private List<Player> players;
     private static bool gameFinished = false;
     private bool isTurnGoing = false;
+    private int _diceResult = -1;
 
     //scusa fra è giusto al volo per quando finisce il gioco così testo
     public static void EndGame()
@@ -46,10 +47,22 @@ public class GM : MonoBehaviour
         PawnMouseInteractions.pawnPicked -= pawnPicked;
     }
 
-    private void rollingFinished()
+    private void rollingFinished(int result)
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonView pw = PhotonView.Get(this);
+            pw.RPC("AssignResult", RpcTarget.All, result);
+        }
         _isDiceRolling = false;
     }
+
+    [PunRPC]
+    public void AssignResult(int result)
+    {
+        _diceResult = result;
+    }
+
     public Player GetPlayerByNumber(int pn)
     {
 
@@ -110,9 +123,9 @@ public class GM : MonoBehaviour
     {
         //Debug.LogError("Giovanni rana");
         _currentPlayerText.color = _pawnMaterials[currentPlayer.GetPlayerNumber() - 1].color;
-        _currentPlayerText.text = "Player " + currentPlayer.GetPlayerNumber();
+        _currentPlayerText.text = string.Format("Player {0} ({1})", currentPlayer.GetPlayerNumber(), currentPlayer.GetPhotonNickName());
         _hasMove = false;
-        if (_automaticThrows)
+        if (_automaticThrows || (PhotonNetwork.IsMasterClient && currentPlayer.GetPlayerNumber().ToString() == currentPlayer.GetPhotonNickName()))
         {
             requestRoll();
         }
@@ -124,10 +137,11 @@ public class GM : MonoBehaviour
         dice.RollDice();
         _isDiceRolling = true;
 
-        yield return new WaitUntil(() => !_isDiceRolling);
+        yield return new WaitUntil(() => !_isDiceRolling && _diceResult > 0);
 
-        int result = dice.GetResult();
-        bool hasMoves = currentPlayer.AssignMoves(result);
+        //int result = dice.GetResult();
+        Debug.LogError(_diceResult + " vs " + dice.GetResult());
+        bool hasMoves = currentPlayer.AssignMoves(_diceResult, PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName());
         if (hasMoves)
         {
             if (PhotonNetwork.IsMasterClient && currentPlayer.GetPlayerNumber().ToString() == currentPlayer.GetPhotonNickName())
@@ -137,13 +151,17 @@ public class GM : MonoBehaviour
                 {
                     if (p.GetComponent<PawnMouseInteractions>().GetPossibleMove() != null)
                     {
+                        p.GetComponent<PawnMouseInteractions>().ExecuteClick(true);
                         //servono gli eventi
-                        ExecuteEvents.Execute<IPointerClickHandler>(p.GetPawn(), new PointerEventData(EventSystem.current), ExecuteEvents.pointerClickHandler);
+                        //ExecuteEvents.Execute<IPointerClickHandler>(p.GetPawn(), new PointerEventData(EventSystem.current), ExecuteEvents.pointerClickHandler);
                         break;
                     }
                 }
+                yield return new WaitUntil(() => _pickedMove != null);
+                PhotonView ps = PhotonView.Get(this);
+                ps.RPC("ChoosedMoveApplication", RpcTarget.All, new object[] { _pickedMove.GetPawn()[0].GetPawnName() });
             }
-            if (PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName())
+            else if (PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName())
             {
                 yield return new WaitUntil(() => _pickedMove != null);
                 PhotonView ps = PhotonView.Get(this);
@@ -162,7 +180,7 @@ public class GM : MonoBehaviour
         currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
         _diceCam.enabled = false;
         isTurnGoing = false;
-
+        _diceResult = -1;
     }
     [PunRPC]
     public void ChoosedMoveApplication(string pawn)

@@ -6,7 +6,7 @@ using Photon.Pun;
 
 public class Dice : MonoBehaviour
 {
-	public delegate void RollAction();
+	public delegate void RollAction(int result);
 	public static event RollAction diceRolled;
 
 	private Rigidbody rb;
@@ -84,7 +84,7 @@ public class Dice : MonoBehaviour
 			}
 
 			throws[result]++;
-			diceRolled();
+			diceRolled(result);
 		}
 		// questo è meglio farlo in altra maniera
 		else if (rb.velocity.magnitude != 0)

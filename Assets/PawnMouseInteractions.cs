@@ -15,6 +15,7 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
     private Material _destinationCellMaterial = null;
     private Color _destinationCellColor;
     private Move _possibleMove = null;
+    private bool _belongsToCurrentPlayer = false;
 
     // Start is called before the first frame update
     void Start()
@@ -29,16 +30,17 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
 
     }
     //aggiungere circa ovunque if(PhotonNetwork.localPlayer.NickName == currentPlayer.GetPhotonNickName()){}
-    public void assignPossibleMove(Move m)
+    public void assignPossibleMove(Move m, bool belongsToCurrentPlayer)
     {
         _destinationCellMaterial = m.GetFinishCell().gameObject.GetComponent<MeshRenderer>().material;
         _destinationCellColor = _destinationCellMaterial.color;
         _possibleMove = m;
+        _belongsToCurrentPlayer = belongsToCurrentPlayer;
     }
 
     public void Hover()
     {
-        if (_possibleMove!=null)
+        if (_possibleMove != null && _belongsToCurrentPlayer)
         {
             _material.EnableKeyword("_EMISSION");
             _material.SetColor("_EmissionColor", _pawnColor * 7);
@@ -70,19 +72,25 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
         UnHover();
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public void ExecuteClick(bool forced = false)
     {
-        if(_possibleMove!=null)
+        if (_possibleMove != null && (_belongsToCurrentPlayer || forced))
         {
             UnHover();
             pawnPicked(_possibleMove);
         }
     }
-    public Move GetPossibleMove() {
+    public void OnPointerClick(PointerEventData pointerEventData)
+    {
+        ExecuteClick();
+    }
+    public Move GetPossibleMove()
+    {
         return _possibleMove;
     }
     public void clearCell()
     {
         _possibleMove = null;
     }
+
 }
