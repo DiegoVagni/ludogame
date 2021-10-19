@@ -90,7 +90,7 @@ public class GM : MonoBehaviour
     {
         if (!_mayStartRolling && !gameFinished)
         {
-            _diceCam.enabled = true;
+            //_diceCam.enabled = true;
             _mayStartRolling = true;
             _rollDiceButton.interactable = false;
         }
@@ -148,6 +148,10 @@ public class GM : MonoBehaviour
         _rollDiceButton.interactable = PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName();
         yield return new WaitUntil(() => _mayStartRolling);
         _mayStartRolling = false;
+
+
+        //PRECARIO
+        _diceCam.enabled = true;
 
         dice.RollDice();
         _isDiceRolling = true;
