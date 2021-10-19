@@ -26,6 +26,8 @@ public class GM : MonoBehaviour
     private static bool gameFinished = false;
     private bool isTurnGoing = false;
     private int _diceResult = -1;
+    private List<bool> _diceThreads;
+    private List<Photon.Realtime.Player> _punplayers;
 
     //scusa fra è giusto al volo per quando finisce il gioco così testo
     public static void EndGame()
@@ -49,12 +51,22 @@ public class GM : MonoBehaviour
 
     private void rollingFinished(int result)
     {
+        PhotonView pw = PhotonView.Get(this);
+        int index = _punplayers.FindIndex((p) => p.NickName == PhotonNetwork.LocalPlayer.NickName);
+        pw.RPC("SetDiceThreadFinished", RpcTarget.All, index);
+
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonView pw = PhotonView.Get(this);
             pw.RPC("AssignResult", RpcTarget.All, result);
         }
         _isDiceRolling = false;
+    }
+
+
+    [PunRPC]
+    public void SetDiceThreadFinished(int index)
+    {
+        _diceThreads[index] = true;
     }
 
     [PunRPC]
@@ -96,13 +108,14 @@ public class GM : MonoBehaviour
         _diceCam.enabled = false;
 
         players = new List<Player>();
-        List<Photon.Realtime.Player> punplayers = new List<Photon.Realtime.Player>(PhotonNetwork.PlayerList);
+        _punplayers = new List<Photon.Realtime.Player>(PhotonNetwork.PlayerList);
+        _diceThreads = new List<bool>(new bool[_punplayers.Count]);
         int photonIndex = 0;
         foreach (Material m in playerMaterials)
         {
-            if (photonIndex < punplayers.Count)
+            if (photonIndex < _punplayers.Count)
             {
-                players.Add(new Player(m, punplayers[photonIndex]));
+                players.Add(new Player(m, _punplayers[photonIndex]));
                 photonIndex++;
             }
             else
@@ -125,6 +138,8 @@ public class GM : MonoBehaviour
         _currentPlayerText.color = _pawnMaterials[currentPlayer.GetPlayerNumber() - 1].color;
         _currentPlayerText.text = string.Format("Player {0} ({1})", currentPlayer.GetPlayerNumber(), currentPlayer.GetPhotonNickName());
         _hasMove = false;
+        _diceThreads = new List<bool>(new bool[_punplayers.Count]);
+
         if (_automaticThrows || (PhotonNetwork.IsMasterClient && currentPlayer.GetPlayerNumber().ToString() == currentPlayer.GetPhotonNickName()))
         {
             requestRoll();
@@ -137,7 +152,7 @@ public class GM : MonoBehaviour
         dice.RollDice();
         _isDiceRolling = true;
 
-        yield return new WaitUntil(() => !_isDiceRolling && _diceResult > 0);
+        yield return new WaitUntil(() => !_isDiceRolling && _diceResult > 0 && !_diceThreads.Contains(false));
 
         //int result = dice.GetResult();
         Debug.LogError(_diceResult + " vs " + dice.GetResult());
