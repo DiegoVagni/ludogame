@@ -172,7 +172,7 @@ public class GM : MonoBehaviour
         _isDiceRolling = true;
 
         yield return new WaitUntil(() => !_isDiceRolling && _diceResult > 0 && !_diceThreads.Contains(false));
-
+        int currentTurnDiceResult = _diceResult;
         //int result = dice.GetResult();
 
         bool hasMoves = currentPlayer.AssignMoves(_diceResult, PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName());
@@ -211,7 +211,9 @@ public class GM : MonoBehaviour
         _pickedMove = null;
         currentPlayer.clearPawnSuggestions();
         //sarebbe come + 1 per il fatto che il conteggio parte da 1
+        if (currentTurnDiceResult != 6) { 
         currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
+        }
         _diceCam.enabled = false;
 
         PhotonView pw = PhotonView.Get(this);
