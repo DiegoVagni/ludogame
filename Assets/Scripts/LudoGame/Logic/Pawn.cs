@@ -65,6 +65,11 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
     public Cell GetEndCell(int steps)
     {
         Cell nextCell = currentCell;
+        if (nextCell.GetCellType() == CellType.Finish)
+        {
+            return null;
+        }
+
         for (int i = 0; i < steps; i++)
         {
             if (nextCell.GetCellType() == CellType.Junction && ((PlayerCell)nextCell).GetPlayer().GetPlayerNumber() == player.GetPlayerNumber())
@@ -85,7 +90,7 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
             {
                 if (nextCell.GetNumberOfPawns() >= 2)
                 {
-                    if (nextCell.GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber() || (steps-1)==i)
+                    if (nextCell.GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber() || (steps - 1) == i)
                     {
                         return null;
                     }
@@ -99,7 +104,7 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
             {
                 if (steps == i - 1)
                 {
-                    if ((nextCell.GetNumberOfPawns() > 0 && (nextCell.GetPawnsInCell()[0].GetPlayerNumber() == GetPlayerNumber()) || (nextCell.GetCellType() == CellType.Safe && ((PlayerCell)nextCell).GetPawnsInCell().Count>0 && ((PlayerCell)nextCell).GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber())))
+                    if ((nextCell.GetNumberOfPawns() > 0 && (nextCell.GetPawnsInCell()[0].GetPlayerNumber() == GetPlayerNumber()) || (nextCell.GetCellType() == CellType.Safe && ((PlayerCell)nextCell).GetPawnsInCell().Count > 0 && ((PlayerCell)nextCell).GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber())))
                     {
                         return null;
                     }
@@ -166,7 +171,7 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
                 foreach (Pawn p in pawnsInCell)
                 {
                     //da testare bene
-                    if (p.GetPlayer() != GetPlayer() )
+                    if (p.GetPlayer() != GetPlayer())
                     {
                         somethingToEat = true;
                         break;

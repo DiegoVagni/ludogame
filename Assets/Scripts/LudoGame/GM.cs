@@ -27,6 +27,7 @@ public class GM : MonoBehaviour
     private bool isTurnGoing = false;
     private int _diceResult = -1;
     private List<bool> _diceThreads;
+    private List<bool> _turnsFinished;
     private List<Photon.Realtime.Player> _punplayers;
 
     //scusa fra è giusto al volo per quando finisce il gioco così testo
@@ -70,6 +71,12 @@ public class GM : MonoBehaviour
     }
 
     [PunRPC]
+    public void SetTurnFinished(int index)
+    {
+        _turnsFinished[index] = true;
+    }
+
+    [PunRPC]
     public void AssignResult(int result)
     {
         _diceResult = result;
@@ -110,6 +117,14 @@ public class GM : MonoBehaviour
         players = new List<Player>();
         _punplayers = new List<Photon.Realtime.Player>(PhotonNetwork.PlayerList);
         _diceThreads = new List<bool>(new bool[_punplayers.Count]);
+
+        bool[] turns = new bool[_punplayers.Count];
+        for (int i = 0; i < turns.Length; i++)
+        {
+            turns[i] = true;
+        }
+        _turnsFinished = new List<bool>(turns);
+
         int photonIndex = 0;
         foreach (Material m in playerMaterials)
         {
@@ -159,7 +174,7 @@ public class GM : MonoBehaviour
         yield return new WaitUntil(() => !_isDiceRolling && _diceResult > 0 && !_diceThreads.Contains(false));
 
         //int result = dice.GetResult();
-       
+
         bool hasMoves = currentPlayer.AssignMoves(_diceResult, PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName());
         if (hasMoves)
         {
@@ -198,7 +213,12 @@ public class GM : MonoBehaviour
         //sarebbe come + 1 per il fatto che il conteggio parte da 1
         currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
         _diceCam.enabled = false;
-        isTurnGoing = false;
+
+        PhotonView pw = PhotonView.Get(this);
+        int index = _punplayers.FindIndex((p) => p.NickName == PhotonNetwork.LocalPlayer.NickName);
+        pw.RPC("SetTurnFinished", RpcTarget.All, index);
+        //isTurnGoing = false;
+
         _diceResult = -1;
     }
     [PunRPC]
@@ -214,19 +234,20 @@ public class GM : MonoBehaviour
         currentPlayer.ChooseMove(p.GetComponent<PawnMouseInteractions>().GetPossibleMove());
         _hasMove = true;
     }
-    [PunRPC]
+    /*[PunRPC]
     private void EndTurn()
     {
 
         isTurnGoing = false;
         Debug.Log("_________________________________________");
-    }
+    }*/
     // Update is called once per frame
     void Update()
     {
 
-        if (!gameFinished && !isTurnGoing && Time.frameCount > 10)
+        if (!gameFinished && !_turnsFinished.Contains(false) && Time.frameCount > 10)
         {
+            _turnsFinished = new List<bool>(new bool[_punplayers.Count]);
             //PhotonView pw = PhotonView.Get(this);
             //pw.RPC("StartTurn", RpcTarget.All);
             StartTurn();
