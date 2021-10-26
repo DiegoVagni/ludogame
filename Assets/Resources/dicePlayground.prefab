@@ -389,6 +389,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1764869572957127478}
     m_Modifications:
+    - target: {fileID: 1982542975232070454, guid: 5284f5629c1841c489f4a9946b64b9e4, type: 3}
+      propertyPath: forceMax
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 1983305392466660751, guid: 5284f5629c1841c489f4a9946b64b9e4, type: 3}
       propertyPath: m_Name
       value: BlackDie
@@ -440,6 +444,10 @@ PrefabInstance:
     - target: {fileID: 7980965885826502022, guid: 5284f5629c1841c489f4a9946b64b9e4, type: 3}
       propertyPath: sceneViewId
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7980965885826502022, guid: 5284f5629c1841c489f4a9946b64b9e4, type: 3}
+      propertyPath: Synchronization
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5284f5629c1841c489f4a9946b64b9e4, type: 3}

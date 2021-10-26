@@ -26,9 +26,6 @@ public class HomeCell : PlayerCell{
 				pawn.GetPawn().AddComponent<PawnMouseInteractions>();
 				pawnInCell.Add(pawn);
 
-
-				pawn.transform.rotation = Quaternion.Euler(-90, 0, 0);
-
 				pawns.Add(pawn);
 				index++;
 			}

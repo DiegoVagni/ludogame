@@ -208,12 +208,11 @@ MonoBehaviour:
   - {fileID: 2456600895670660063}
   - {fileID: 6054352979651314069}
   - {fileID: 3499303784838218865}
-  sys: {fileID: 0}
   pawnPrefab:
-  - {fileID: -2373360175942961608, guid: af2f048211aa37d4694fcdf4d1200e26, type: 3}
-  - {fileID: -45757324158110733, guid: 92cdfc05acb6f344cb1f11fc362be2b8, type: 3}
-  - {fileID: -6119069697635797830, guid: 2a9390a736176c94db81493a8ffbd8aa, type: 3}
-  - {fileID: 4977196815750586089, guid: d920114bce63d19479315c273b1de6ae, type: 3}
+  - {fileID: 7827810947320992909, guid: d9e2a7f4a9d98f1418b6b63eaade4a86, type: 3}
+  - {fileID: 7827810947320992909, guid: b082ed231bd41ba48912f69463d5cc37, type: 3}
+  - {fileID: 7827810947320992909, guid: 1724a1f055938fb44bc1a13106f19d52, type: 3}
+  - {fileID: 7827810947320992909, guid: aeb89909f5e8dc641bad3c1f6413e24d, type: 3}
 --- !u!1 &8964594779176351703
 GameObject:
   m_ObjectHideFlags: 0

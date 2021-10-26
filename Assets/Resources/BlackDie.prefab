@@ -129,8 +129,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   torqueMin: -500
   torqueMax: 500
-  forceMin: 2
-  forceMax: 10
+  forceMin: 1
+  forceMax: 4
   isRolling: 0
 --- !u!114 &7980965885826502022
 MonoBehaviour:
