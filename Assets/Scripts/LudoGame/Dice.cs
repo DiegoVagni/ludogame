@@ -33,6 +33,7 @@ public class Dice : MonoBehaviour
     public static int finished;
     private float prevVelocity = -1;
     private float prevPrevVelocity = -1;
+    public float gameSpeed;
     // Start is called before the first frame update
     //sposta sto codice in un unittest
     static Dice()
@@ -48,6 +49,7 @@ public class Dice : MonoBehaviour
         startingScale = transform.localScale;
         random = new System.Random(Guid.NewGuid().GetHashCode());
         rb = this.GetComponent<Rigidbody>();
+        Time.timeScale = gameSpeed;
     }
     // Update is called once per frame
     void Update()
