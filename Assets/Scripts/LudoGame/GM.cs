@@ -9,6 +9,7 @@ public class GM : MonoBehaviour
 {
     [SerializeField] private TMPro.TextMeshProUGUI _currentPlayerText;
     [SerializeField] private Button _rollDiceButton;
+    [SerializeField] private TMPro.TextMeshProUGUI _rollDiceText;
     [SerializeField] private RawImage _diceCam;
     [SerializeField] private List<Material> _pawnMaterials;
     [SerializeField] private bool _automaticThrows;
@@ -97,7 +98,6 @@ public class GM : MonoBehaviour
     {
         if (!_mayStartRolling && !gameFinished)
         {
-            //_diceCam.enabled = true;
             _mayStartRolling = true;
             _rollDiceButton.interactable = false;
         }
@@ -112,7 +112,6 @@ public class GM : MonoBehaviour
     void Start()
     {
         dice = GameObject.FindGameObjectWithTag("Dice").GetComponent<Dice>();
-        _diceCam.enabled = false;
 
         players = new List<Player>();
         _punplayers = new List<Photon.Realtime.Player>(PhotonNetwork.PlayerList);
@@ -152,6 +151,7 @@ public class GM : MonoBehaviour
         //Debug.LogError("Giovanni rana");
         _currentPlayerText.color = _pawnMaterials[currentPlayer.GetPlayerNumber() - 1].color;
         _currentPlayerText.text = string.Format("Player {0} ({1})", currentPlayer.GetPlayerNumber(), currentPlayer.GetPhotonNickName());
+        _rollDiceText.text = "Tira il dado " + currentPlayer.GetPhotonNickName() + "!";
         _hasMove = false;
         _diceThreads = new List<bool>(new bool[_punplayers.Count]);
 
@@ -166,7 +166,6 @@ public class GM : MonoBehaviour
 
 
         //PRECARIO
-        _diceCam.enabled = true;
 
         dice.RollDice();
         _isDiceRolling = true;
@@ -174,7 +173,7 @@ public class GM : MonoBehaviour
         yield return new WaitUntil(() => !_isDiceRolling && _diceResult > 0 && !_diceThreads.Contains(false));
         int currentTurnDiceResult = _diceResult;
         //int result = dice.GetResult();
-
+        _rollDiceText.text = "Fai la tua mossa!";
         bool hasMoves = currentPlayer.AssignMoves(_diceResult, PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName());
         if (hasMoves)
         {
@@ -214,7 +213,6 @@ public class GM : MonoBehaviour
         if (currentTurnDiceResult != 6) { 
         currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
         }
-        _diceCam.enabled = false;
 
         PhotonView pw = PhotonView.Get(this);
         int index = _punplayers.FindIndex((p) => p.NickName == PhotonNetwork.LocalPlayer.NickName);

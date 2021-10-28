@@ -920,5 +920,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: VoiceRow
       objectReference: {fileID: 0}
+    - target: {fileID: 5693701933912426648, guid: 14f47b64b992d394c9900853a878b0db, type: 3}
+      propertyPath: m_Text
+      value: Create
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 14f47b64b992d394c9900853a878b0db, type: 3}
