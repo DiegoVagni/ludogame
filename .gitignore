@@ -632,7 +632,10 @@ crashlytics-build.properties
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,unity,csharp
 Assets/LittleGamesAssetsPack/
+Assets/ProCore/
+Assets/Procore.meta
 log.txt
 Assets/LittleGamesAssetsPack.meta
 Assets/TextMesh Pro/
+Assets/TextMesh Pro.meta
 build.rar
