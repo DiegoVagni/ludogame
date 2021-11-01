@@ -18,6 +18,17 @@ public class GM : MonoBehaviour
     private bool _isDiceRolling = false;
     private Move _pickedMove = null;
     private bool _hasMove = false;
+    private enum TURN_PHASE
+    {
+        NONE = 0,
+        WAITING_FOR_ROLL = 1,
+        ROLLING = 2,
+        CHOOSING_MOVE = 3,
+        MOVING = 4,
+        END_TURN = 5,
+    }
+
+    private TURN_PHASE _currentTurnPhase = TURN_PHASE.NONE;
 
     [SerializeField]
     private List<Material> playerMaterials;
@@ -138,6 +149,7 @@ public class GM : MonoBehaviour
             }
         }
         currentPlayer = players[0];
+        _rollDiceButton.gameObject.AddComponent<PointerHover>();
 
     }
     //[PunRPC]
@@ -159,24 +171,29 @@ public class GM : MonoBehaviour
         {
             requestRoll();
         }
+
+        _currentTurnPhase = TURN_PHASE.WAITING_FOR_ROLL;
         _dice.IdleSpin();
         _rollDiceButton.interactable = PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName();
+        _rollDiceButton.GetComponent<PointerHover>().enabled = PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName();
+
         yield return new WaitUntil(() => _mayStartRolling);
         _mayStartRolling = false;
 
-
-        //PRECARIO
-
+        _currentTurnPhase = TURN_PHASE.ROLLING;
         _dice.RollDice();
         _isDiceRolling = true;
 
         yield return new WaitUntil(() => !_isDiceRolling && _diceResult > 0 && !_diceThreads.Contains(false));
+
+        _currentTurnPhase = TURN_PHASE.CHOOSING_MOVE;
         int currentTurnDiceResult = _diceResult;
         //int result = dice.GetResult();
-        _rollDiceText.text = "Fai la tua mossa!";
         bool hasMoves = currentPlayer.AssignMoves(_diceResult, PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName());
         if (hasMoves)
         {
+
+            _rollDiceText.text = string.Format("Fai la tua mossa! - {0}", _diceResult);
             if (PhotonNetwork.IsMasterClient && currentPlayer.GetPlayerNumber().ToString() == currentPlayer.GetPhotonNickName())
             {
                 Debug.Log("controllo l'ia");
@@ -198,7 +215,9 @@ public class GM : MonoBehaviour
                 PhotonView ps = PhotonView.Get(this);
                 ps.RPC("ChoosedMoveApplication", RpcTarget.All, new object[] { _pickedMove.GetPawn()[0].GetPawnName() });
             }
+
             yield return new WaitUntil(() => { return _hasMove; });
+            _currentTurnPhase = TURN_PHASE.MOVING;
         }
         else
         {
@@ -215,6 +234,8 @@ public class GM : MonoBehaviour
 
         PhotonView pw = PhotonView.Get(this);
         int index = _punplayers.FindIndex((p) => p.NickName == PhotonNetwork.LocalPlayer.NickName);
+
+        _currentTurnPhase = TURN_PHASE.END_TURN;
         pw.RPC("SetTurnFinished", RpcTarget.All, index);
         //isTurnGoing = false;
 

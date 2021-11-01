@@ -72,6 +72,7 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
 
         for (int i = 0; i < steps; i++)
         {
+
             if (nextCell.GetCellType() == CellType.Junction && ((PlayerCell)nextCell).GetPlayer().GetPlayerNumber() == player.GetPlayerNumber())
             {
                 Debug.Log("entrando nella junction con " + pawnName);
@@ -80,7 +81,7 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
             }
             else
             {
-                if (nextCell.GetCellType() == CellType.Finish)
+                if (i == steps - 1 && nextCell.GetCellType() == CellType.Finish)
                 {
                     return nextCell;
                 }
@@ -90,21 +91,27 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
             {
                 if (nextCell.GetNumberOfPawns() >= 2)
                 {
-                    if (nextCell.GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber() || (steps - 1) == i)
+                    if (nextCell.GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber() || i == (steps - 1))
                     {
                         return null;
                     }
                 }
-                if (nextCell.GetNumberOfPawns() != 0 && nextCell.GetCellType() == CellType.Safe && ((PlayerCell)nextCell).GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber())
+                if (nextCell.GetNumberOfPawns() != 0 &&
+                    nextCell.GetCellType() == CellType.Safe &&
+                    ((PlayerCell)nextCell).GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber())
                 {
                     return null;
                 }
             }
             else
             {
-                if (steps == i - 1)
+                if (i == steps - 1)
                 {
-                    if ((nextCell.GetNumberOfPawns() > 0 && (nextCell.GetPawnsInCell()[0].GetPlayerNumber() == GetPlayerNumber()) || (nextCell.GetCellType() == CellType.Safe && ((PlayerCell)nextCell).GetPawnsInCell().Count > 0 && ((PlayerCell)nextCell).GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber())))
+                    if ((nextCell.GetNumberOfPawns() > 0 &&
+                        (nextCell.GetPawnsInCell()[0].GetPlayerNumber() == GetPlayerNumber()) ||
+                        (nextCell.GetCellType() == CellType.Safe &&
+                        ((PlayerCell)nextCell).GetPawnsInCell().Count > 0 &&
+                        ((PlayerCell)nextCell).GetPawnsInCell()[0].GetPlayerNumber() != GetPlayerNumber())))
                     {
                         return null;
                     }

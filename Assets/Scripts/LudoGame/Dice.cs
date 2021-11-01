@@ -42,7 +42,6 @@ public class Dice : MonoBehaviour
         throws = new int[] { 0, 0, 0, 0, 0, 0, 0 };
         finished = 0;
     }
-
     void Start()
     {
         startingPosition = transform.position;
@@ -62,7 +61,7 @@ public class Dice : MonoBehaviour
             PhotonView pw = PhotonView.Get(this);
             pw.RPC("AdjustDice", RpcTarget.Others, transform.position, transform.rotation.eulerAngles, rb.velocity, rb.angularVelocity);
         }
-        if (isRolling && rb.velocity.magnitude == 0 && prevPrevVelocity == 0 && prevVelocity == 0)
+        if (isRolling && Math.Abs(rb.velocity.magnitude) <= 0.001 && prevPrevVelocity == 0 && prevVelocity == 0)
         {
             currentThrow++;
             isRolling = false;
