@@ -21,7 +21,7 @@ public class GM : MonoBehaviour
 
     [SerializeField]
     private List<Material> playerMaterials;
-    private Dice dice;
+    private Dice _dice;
     private Player currentPlayer;
     private List<Player> players;
     private static bool gameFinished = false;
@@ -111,7 +111,7 @@ public class GM : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        dice = GameObject.FindGameObjectWithTag("Dice").GetComponent<Dice>();
+        _dice = GameObject.FindGameObjectWithTag("Dice").GetComponent<Dice>();
 
         players = new List<Player>();
         _punplayers = new List<Photon.Realtime.Player>(PhotonNetwork.PlayerList);
@@ -159,7 +159,7 @@ public class GM : MonoBehaviour
         {
             requestRoll();
         }
-
+        _dice.IdleSpin();
         _rollDiceButton.interactable = PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName();
         yield return new WaitUntil(() => _mayStartRolling);
         _mayStartRolling = false;
@@ -167,7 +167,7 @@ public class GM : MonoBehaviour
 
         //PRECARIO
 
-        dice.RollDice();
+        _dice.RollDice();
         _isDiceRolling = true;
 
         yield return new WaitUntil(() => !_isDiceRolling && _diceResult > 0 && !_diceThreads.Contains(false));
@@ -185,8 +185,6 @@ public class GM : MonoBehaviour
                     if (p.GetComponent<PawnMouseInteractions>().GetPossibleMove() != null)
                     {
                         p.GetComponent<PawnMouseInteractions>().ExecuteClick(true);
-                        //servono gli eventi
-                        //ExecuteEvents.Execute<IPointerClickHandler>(p.GetPawn(), new PointerEventData(EventSystem.current), ExecuteEvents.pointerClickHandler);
                         break;
                     }
                 }
@@ -210,8 +208,9 @@ public class GM : MonoBehaviour
         _pickedMove = null;
         currentPlayer.clearPawnSuggestions();
         //sarebbe come + 1 per il fatto che il conteggio parte da 1
-        if (currentTurnDiceResult != 6) { 
-        currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
+        if (currentTurnDiceResult != 6)
+        {
+            currentPlayer = players[currentPlayer.GetPlayerNumber() % 4];
         }
 
         PhotonView pw = PhotonView.Get(this);
@@ -234,14 +233,7 @@ public class GM : MonoBehaviour
         currentPlayer.ChooseMove(p.GetComponent<PawnMouseInteractions>().GetPossibleMove());
         _hasMove = true;
     }
-    /*[PunRPC]
-    private void EndTurn()
-    {
 
-        isTurnGoing = false;
-        Debug.Log("_________________________________________");
-    }*/
-    // Update is called once per frame
     void Update()
     {
 

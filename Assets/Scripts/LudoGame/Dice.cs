@@ -18,6 +18,7 @@ public class Dice : MonoBehaviour
     private Vector3 startingPosition;
     private Quaternion startingRotation;
     private Vector3 startingScale;
+    private float _startingAngularDrag;
 
     private float lastDiceUpdateTime = 0.25f;
 
@@ -49,6 +50,7 @@ public class Dice : MonoBehaviour
         startingScale = transform.localScale;
         random = new System.Random(Guid.NewGuid().GetHashCode());
         rb = this.GetComponent<Rigidbody>();
+        _startingAngularDrag = rb.angularDrag;
         Time.timeScale = gameSpeed;
     }
     // Update is called once per frame
@@ -141,6 +143,9 @@ public class Dice : MonoBehaviour
     //0 upForce, 1 torqueForce;
     private void RollDiceOnNetwork(object[] param)
     {
+        rb.velocity = Vector3.zero;
+        rb.useGravity = true;
+        rb.angularDrag = _startingAngularDrag;
         transform.position = startingPosition;
         transform.rotation = startingRotation;
         transform.localScale = startingScale;
@@ -150,5 +155,15 @@ public class Dice : MonoBehaviour
         rb.AddForce((Vector3)param[0], ForceMode.Impulse);
         rb.AddTorque((Vector3)param[1], ForceMode.Impulse);
 
+    }
+
+    public void IdleSpin()
+    {
+        transform.position = startingPosition;
+        transform.rotation = startingRotation;
+        transform.localScale = startingScale;
+        rb.useGravity = false;
+        rb.angularDrag = 0;
+        rb.AddTorque(new Vector3(0.3f, -0.2f, 0.5f), ForceMode.VelocityChange);
     }
 }
