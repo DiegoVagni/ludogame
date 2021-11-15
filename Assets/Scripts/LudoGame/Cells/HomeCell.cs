@@ -4,22 +4,29 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class HomeCell : PlayerCell{
-	[SerializeField]
-	private List<Pawn> pawnPrefab;
-
-
+	
 	public void SpawnPawns(Player player)
 	{
+		while (!GM.GetPrefabReady()) {
+			//Wait
+			//sì giudicami tanto tutta la parte è una completa schifezza, sto aggirando il problema in attesa di una
+			//illuminazione
+		
+		}
+
 		List<Pawn> pawns = new List<Pawn>();
 		int index = 0;
+		
 		foreach (Transform s in pawnPosition)
 		{
+			pawns = GM.GetPawnPrefab()[player.GetPlayerNumber() - 1];
+		
 			Pawn pawn;
 			if (PhotonNetwork.IsMasterClient)
 			{
 
 
-				pawn = PhotonNetwork.Instantiate(pawnPrefab[player.GetPlayerNumber() - 1].name, s.position, Quaternion.identity, 0, new object[] { player.GetPlayerNumber() , index }).GetComponent<Pawn>();
+				pawn = PhotonNetwork.Instantiate(pawns[index].name, s.position, Quaternion.identity, 0, new object[] { player.GetPlayerNumber() , index }).GetComponent<Pawn>();
 				//unico punto dove non son riuscito a far convergere le informazioni. ma � in inizializzazione quindi va bene
 
 				pawn.Initialize(player, this, player.GetPlayerNumber() + "_" + index + "Pawn", index);

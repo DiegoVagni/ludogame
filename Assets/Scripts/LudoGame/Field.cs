@@ -139,7 +139,7 @@ public class Field : MonoBehaviour
                     pos = path[path.Count - 1].GetPosition() + ms.GetAxis() + ms.GetAxis() * (cellDistance + 0.15f);
                     Quaternion rotation = Quaternion.Euler(90, 90 * ((playerIndex + 2) % 4), 0);
                     PlayerCell finish = Instantiate(finishCell, pos, rotation);
-                    finish.transform.rotation = Quaternion.Euler(0, 90 * ((playerIndex + 2) % 4), 0);
+                    finish.transform.rotation = Quaternion.Euler(90, 90 * ((playerIndex + 2) % 4), 0);
                     finish.transform.SetParent(transform);
 
                     finish.GetComponent<MeshRenderer>().material = currentPlayer.GetMaterial();

@@ -41,9 +41,39 @@ public class GM : MonoBehaviour
     private List<bool> _diceThreads;
     private List<bool> _turnsFinished;
     private List<Photon.Realtime.Player> _punplayers;
+    private static List<List<Pawn>> playerPawnPrefabs;
+    [SerializeField]
+    private List<Pawn> playerOnePawns;
+    [SerializeField]
+    private List<Pawn> playerTwoPawns;
+    [SerializeField]
+    private List<Pawn> playerThreePawns;
+    [SerializeField]
+    private List<Pawn> playerFourPawns;
+    private static bool prefabReady = false;
 
+    public void Awake()
+    {
+        //non si può settar da editor list di list di pawns per cui ne setto 4 diverse e le mergo in una per comodità
+        //tranquillo, è provvisorio tanto...ma da qualche parte va trovata una soluzione
+        playerPawnPrefabs = new List<List<Pawn>>();
+        playerPawnPrefabs.Add(playerOnePawns);
+        playerPawnPrefabs.Add(playerTwoPawns);
+        playerPawnPrefabs.Add(playerThreePawns);
+        playerPawnPrefabs.Add(playerFourPawns);
+        prefabReady = true;
+
+
+    }
     //scusa fra è giusto al volo per quando finisce il gioco così testo
-    public static void EndGame()
+    public static bool GetPrefabReady() {
+        return prefabReady;
+    }
+
+    public static List<List<Pawn>> GetPawnPrefab() {
+        return playerPawnPrefabs;
+    }
+	public static void EndGame()
     {
         gameFinished = true;
     }
@@ -136,16 +166,17 @@ public class GM : MonoBehaviour
         _turnsFinished = new List<bool>(turns);
 
         int photonIndex = 0;
+        int playerNumber = 0;
         foreach (Material m in playerMaterials)
         {
             if (photonIndex < _punplayers.Count)
             {
-                players.Add(new Player(m, _punplayers[photonIndex]));
+                players.Add(new Player(m,playerPawnPrefabs[playerNumber], _punplayers[photonIndex]));
                 photonIndex++;
             }
             else
             {
-                players.Add(new Player(m));
+                players.Add(new Player(m, playerPawnPrefabs[playerNumber]));
             }
         }
         currentPlayer = players[0];

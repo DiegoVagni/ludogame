@@ -14,7 +14,9 @@ public class Player
     private HomeCell home;
     private System.Random r;
     private bool ai = false;
+    private List<Pawn> pawnPrefabs;
 
+    
     public string GetPhotonNickName()
     {
         if (photonPlayer != null)
@@ -24,13 +26,13 @@ public class Player
         return playerNumber.ToString();
     }
     //initialization
-    public Player(Material mat, Photon.Realtime.Player photonPlayer = null)
+    public Player(Material mat, List<Pawn> pawnPrefabs, Photon.Realtime.Player photonPlayer = null)
     {
         r = new System.Random();
         this.mat = mat;
         playerNumber = players;
         this.photonPlayer = photonPlayer;
-
+        this.pawnPrefabs = pawnPrefabs;
         players++;
     }
     // Destructor
@@ -39,6 +41,12 @@ public class Player
         players--;
     }
     //getter
+
+    public List<Pawn> GetPawnPrefabs()
+    {
+        return pawnPrefabs;
+    }
+
     public Material GetMaterial()
     {
         return mat;

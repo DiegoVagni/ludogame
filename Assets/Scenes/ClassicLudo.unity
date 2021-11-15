@@ -168,6 +168,26 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 4373d013d768c4034bd89af6cfffed58, type: 2}
   - {fileID: 2100000, guid: 18cb75e9039c34747aacb219cb08018e, type: 2}
   - {fileID: 2100000, guid: c6166cdc79c2d435e938ab04292233a3, type: 2}
+  playerOnePawns:
+  - {fileID: 7827810947320992909, guid: d9e2a7f4a9d98f1418b6b63eaade4a86, type: 3}
+  - {fileID: 7827810947320992909, guid: 478bf56fed9b5c9428038897200c175e, type: 3}
+  - {fileID: 7827810947320992909, guid: 1cc27061185bca74b8d482a2609ea7b0, type: 3}
+  - {fileID: 7827810947320992909, guid: 66cafa1fc65341743bb99b4d48b7dfff, type: 3}
+  playerTwoPawns:
+  - {fileID: 7827810947320992909, guid: 66cafa1fc65341743bb99b4d48b7dfff, type: 3}
+  - {fileID: 7827810947320992909, guid: d9e2a7f4a9d98f1418b6b63eaade4a86, type: 3}
+  - {fileID: 7827810947320992909, guid: 478bf56fed9b5c9428038897200c175e, type: 3}
+  - {fileID: 7827810947320992909, guid: 1cc27061185bca74b8d482a2609ea7b0, type: 3}
+  playerThreePawns:
+  - {fileID: 7827810947320992909, guid: 1cc27061185bca74b8d482a2609ea7b0, type: 3}
+  - {fileID: 7827810947320992909, guid: 66cafa1fc65341743bb99b4d48b7dfff, type: 3}
+  - {fileID: 7827810947320992909, guid: d9e2a7f4a9d98f1418b6b63eaade4a86, type: 3}
+  - {fileID: 7827810947320992909, guid: 478bf56fed9b5c9428038897200c175e, type: 3}
+  playerFourPawns:
+  - {fileID: 7827810947320992909, guid: 478bf56fed9b5c9428038897200c175e, type: 3}
+  - {fileID: 7827810947320992909, guid: 1cc27061185bca74b8d482a2609ea7b0, type: 3}
+  - {fileID: 7827810947320992909, guid: 66cafa1fc65341743bb99b4d48b7dfff, type: 3}
+  - {fileID: 7827810947320992909, guid: d9e2a7f4a9d98f1418b6b63eaade4a86, type: 3}
 --- !u!4 &205904242
 Transform:
   m_ObjectHideFlags: 0
