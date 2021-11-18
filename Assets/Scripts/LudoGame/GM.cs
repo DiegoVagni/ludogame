@@ -218,6 +218,14 @@ public class GM : MonoBehaviour
         yield return new WaitUntil(() => !_isDiceRolling && _diceResult > 0 && !_diceThreads.Contains(false));
 
         _currentTurnPhase = TURN_PHASE.CHOOSING_MOVE;
+
+        /*//SGADHLKJHNAS
+        if((PhotonNetwork.IsMasterClient && currentPlayer.GetPlayerNumber().ToString() != currentPlayer.GetPhotonNickName()))
+        {
+            _diceResult = 6;
+        }
+        //..............................*/
+
         int currentTurnDiceResult = _diceResult;
         //int result = dice.GetResult();
         bool hasMoves = currentPlayer.AssignMoves(_diceResult, PhotonNetwork.LocalPlayer.NickName == currentPlayer.GetPhotonNickName());

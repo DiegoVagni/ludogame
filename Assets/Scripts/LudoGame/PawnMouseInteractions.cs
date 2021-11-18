@@ -17,7 +17,13 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
 
     private Material _destinationCellMaterial = null;
     private Color _destinationCellColor;
+
+    private Material _altDestinationCellMaterial = null;
+    private Color _altDestinationCellColor;
+
     private Move _possibleMove = null;
+    private Move _altMove = null;
+
     private bool _belongsToCurrentPlayer = false;
 
     // Start is called before the first frame update
@@ -27,7 +33,7 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
         _pawnColor = _material.color;
 
         _pointerCursorTexture = (Texture2D)Resources.Load("Cursors/pointer");
-        
+
         //35,0 son le coordinate in pixel del punto di indicatamento nell'immagine (al momento 128x128)
         _mouseTarget = new Vector2(35, 0);
     }
@@ -46,19 +52,45 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
         _belongsToCurrentPlayer = belongsToCurrentPlayer;
     }
 
+    public void assignAltMove(Move m, bool belongsToCurrentPlayer)
+    {
+        _altDestinationCellMaterial = m.GetFinishCell().gameObject.GetComponent<MeshRenderer>().material;
+        _altDestinationCellColor = _altDestinationCellMaterial.color;
+        _altMove = m;
+        _belongsToCurrentPlayer = belongsToCurrentPlayer;
+    }
+
     public void Hover()
     {
-        if (_possibleMove != null && _belongsToCurrentPlayer)
+        if (_belongsToCurrentPlayer)
         {
-            Cursor.SetCursor(_pointerCursorTexture, _mouseTarget, CursorMode.Auto);
+            if (Keyboard.current.ctrlKey.isPressed)
+            {
+                if (_altMove != null)
+                {
+                    Cursor.SetCursor(_pointerCursorTexture, _mouseTarget, CursorMode.Auto);
 
-            _material.EnableKeyword("_EMISSION");
-            _material.SetColor("_EmissionColor", _pawnColor * 7);
+                    _material.EnableKeyword("_EMISSION");
+                    _material.SetColor("_EmissionColor", _pawnColor * 7);
 
-            _destinationCellMaterial.EnableKeyword("_EMISSION");
-            _destinationCellMaterial.SetColor("_EmissionColor", _destinationCellColor * 7);
+                    _altDestinationCellMaterial.EnableKeyword("_EMISSION");
+                    _altDestinationCellMaterial.SetColor("_EmissionColor", _altDestinationCellColor * 7);
 
-            DynamicGI.UpdateEnvironment();
+                    DynamicGI.UpdateEnvironment();
+                }
+            }
+            else if (_possibleMove != null)
+            {
+                Cursor.SetCursor(_pointerCursorTexture, _mouseTarget, CursorMode.Auto);
+
+                _material.EnableKeyword("_EMISSION");
+                _material.SetColor("_EmissionColor", _pawnColor * 7);
+
+                _destinationCellMaterial.EnableKeyword("_EMISSION");
+                _destinationCellMaterial.SetColor("_EmissionColor", _destinationCellColor * 7);
+
+                DynamicGI.UpdateEnvironment();
+            }
         }
     }
 
@@ -70,6 +102,10 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
         if (_destinationCellMaterial != null)
         {
             _destinationCellMaterial.DisableKeyword("_EMISSION");
+        }
+        if (_altDestinationCellMaterial != null)
+        {
+            _altDestinationCellMaterial.DisableKeyword("_EMISSION");
         }
         DynamicGI.UpdateEnvironment();
     }
@@ -86,23 +122,45 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
 
     public void ExecuteClick(bool forced = false)
     {
-        if (_possibleMove != null && (_belongsToCurrentPlayer || forced))
+        if (_belongsToCurrentPlayer || forced)
         {
-            UnHover();
-            pawnPicked(_possibleMove);
+            if (Keyboard.current.ctrlKey.isPressed)
+            {
+                if (_altMove != null)
+                {
+                    UnHover();
+                    pawnPicked(_altMove);
+                }
+            }
+            else if (_possibleMove != null)
+            {
+                UnHover();
+                pawnPicked(_possibleMove);
+            }
         }
     }
     public void OnPointerClick(PointerEventData pointerEventData)
     {
         ExecuteClick();
     }
+
+    //USED ONLY FOR BOTS?
     public Move GetPossibleMove()
     {
-        return _possibleMove;
+        if (_possibleMove != null)
+        {
+            return _possibleMove;
+        }
+        else if (_altMove != null)
+        {
+            return _altMove;
+        }
+        return null;
     }
     public void clearCell()
     {
         _possibleMove = null;
+        _altMove = null;
     }
 
 }
