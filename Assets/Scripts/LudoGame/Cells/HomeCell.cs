@@ -16,17 +16,17 @@ public class HomeCell : PlayerCell{
 
 		List<Pawn> pawns = new List<Pawn>();
 		int index = 0;
-		
+		List<Pawn> pawnPrefabs = GM.GetPawnPrefab()[player.GetPlayerNumber() - 1];
 		foreach (Transform s in pawnPosition)
 		{
-			pawns = GM.GetPawnPrefab()[player.GetPlayerNumber() - 1];
+			Debug.Log(pawns);
 		
 			Pawn pawn;
 			if (PhotonNetwork.IsMasterClient)
 			{
 
 
-				pawn = PhotonNetwork.Instantiate(pawns[index].name, s.position, Quaternion.identity, 0, new object[] { player.GetPlayerNumber() , index }).GetComponent<Pawn>();
+				pawn = PhotonNetwork.Instantiate(pawnPrefabs[index].name, s.position, Quaternion.identity, 0, new object[] { player.GetPlayerNumber() , index }).GetComponent<Pawn>();
 				//unico punto dove non son riuscito a far convergere le informazioni. ma � in inizializzazione quindi va bene
 
 				pawn.Initialize(player, this, player.GetPlayerNumber() + "_" + index + "Pawn", index);

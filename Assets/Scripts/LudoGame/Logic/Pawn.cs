@@ -85,6 +85,10 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
                 {
                     return nextCell;
                 }
+                else if (nextCell.GetCellType() == CellType.Finish)
+                {
+                    return null;
+                }
                 nextCell = nextCell.GetConnectedCells()[CellIntersections.Next];
             }
             if (!fused)
