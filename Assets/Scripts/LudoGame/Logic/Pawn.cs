@@ -17,6 +17,7 @@ public class Pawn : MonoBehaviourPunCallbacks, IPunInstantiateMagicCallback
     public void Initialize(Player player, Cell currentCell, string pawnName, int pawnNumber)
     {
         pawnRigidBody = GetComponent<Rigidbody>();
+        GetComponent<MeshRenderer>().material = player.GetMaterial();
         this.player = player;
         this.currentCell = currentCell;
         this.pawnName = pawnName;
