@@ -147,11 +147,11 @@ public class PawnMouseInteractions : MonoBehaviour, IPointerEnterHandler, IPoint
     //USED ONLY FOR BOTS?
     public Move GetPossibleMove()
     {
-        if (_possibleMove != null)
+        if (_possibleMove != null && !Keyboard.current.ctrlKey.isPressed)
         {
             return _possibleMove;
         }
-        else if (_altMove != null)
+        else if (_altMove != null && Keyboard.current.ctrlKey.isPressed && _belongsToCurrentPlayer)
         {
             return _altMove;
         }
