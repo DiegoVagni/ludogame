@@ -219,12 +219,12 @@ public class GM : MonoBehaviour
 
         _currentTurnPhase = TURN_PHASE.CHOOSING_MOVE;
 
-        /*//SGADHLKJHNAS
+       //SGADHLKJHNAS
         if((PhotonNetwork.IsMasterClient && currentPlayer.GetPlayerNumber().ToString() != currentPlayer.GetPhotonNickName()))
         {
             _diceResult = 6;
         }
-        //..............................*/
+       
 
         int currentTurnDiceResult = _diceResult;
         //int result = dice.GetResult();

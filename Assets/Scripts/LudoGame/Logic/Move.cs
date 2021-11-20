@@ -7,10 +7,10 @@ public class Move
    
 	private Cell finishCell;
 	private List<Pawn> pawns;
-
-	public Move(Cell finishCell, Pawn pawn, Pawn secondPawn = null)
+	private bool alternateMove;
+	public Move(Cell finishCell, Pawn pawn, Pawn secondPawn = null, bool alternateMove = false)
 	{
-	
+		this.alternateMove = alternateMove;
 		this.finishCell = finishCell;
 		pawns = new List<Pawn>();
 		pawns.Add(pawn);
@@ -22,10 +22,15 @@ public class Move
 	public Cell GetFinishCell() {
 		return finishCell;
 	}
+	public void SetAlternateMoveToTrue() {
+		alternateMove = true;
+	}
 
 	public List<Pawn> GetPawn() {
 		return pawns;
 	}
-
+	public bool IsAlternateMove() {
+		return alternateMove;
+	}
 	
 }
